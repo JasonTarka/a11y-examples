@@ -2,7 +2,7 @@
   "name": "tote-site",
   "version": "0.0.1",
   "description": "A backend API and UI frontend for managing shows, players, etc. for Theatre On The Edge.",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "gulp test"
   },
@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "express": "^4.13.3",
-    "morgan": "^1.6.1"
+    "morgan": "^1.6.1",
+    "mysql": "^2.10.0"
   }
 }
