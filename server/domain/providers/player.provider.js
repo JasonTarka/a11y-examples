@@ -2,7 +2,8 @@
 
 module.exports = construct;
 
-let database = require( './Database' );
+let database = require( './database' ),
+	singleton = require( '../../utils/utils' ).singleton;
 
 class PlayerProvider {
 	constructor() {
@@ -25,10 +26,5 @@ class PlayerProvider {
  * @returns {PlayerProvider}
  */
 function construct() {
-	if( construct._instance instanceof PlayerProvider ) {
-		return construct._instance;
-	}
-
-	construct._instance = new PlayerProvider();
-	return construct._instance;
+	return singleton( PlayerProvider );
 }

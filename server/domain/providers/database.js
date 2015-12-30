@@ -13,7 +13,7 @@ class Database {
 
 			// Pool settings
 			connectionLimit: 100,
-			debug: true
+			debug: false
 		} );
 	}
 
@@ -42,8 +42,6 @@ class Database {
 					return reject( new Error( 'Error getting database connection' ) );
 				}
 
-				console.log( 'connected as ID %s', connection.threadId );
-
 				resolve( connection );
 			} );
 		} );
@@ -54,7 +52,6 @@ class Database {
  * @returns {Database}
  */
 function construct() {
-	console.log( this );
 	if( construct._instance instanceof Database ) {
 		return construct._instance;
 	}
