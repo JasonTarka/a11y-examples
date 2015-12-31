@@ -12,13 +12,9 @@ class PlayerController {
 	}
 
 	view( routeParams ) {
-		return new Promise( ( resolve, reject ) => {
-			this._provider.fetchPlayers()
-				.then( players => {
-					resolve( players.find( x => x.id == routeParams.player ) );
-				} )
-				.catch( reject );
-		} );
+		let playerId = routeParams.player;
+
+		return this._provider.fetchPlayer( playerId );
 	}
 
 	get routing() {

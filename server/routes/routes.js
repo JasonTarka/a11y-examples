@@ -1,6 +1,8 @@
 'use strict';
 
-let express = require( 'express' );
+let express = require( 'express' ),
+	DataObject = require( '../domain/data/dataObject' );
+
 let app = express();
 
 module.exports = app;
@@ -49,7 +51,7 @@ function handleRequest( req, res, next, controller, handler ) {
 		result = handler.call( controller, routeParams );
 
 	if( result instanceof Promise ) {
-		return result.then( val => res.send( val ) )
+		return result.then( val => res.send( convertResult( val ) ) )
 			.catch( next );
 	}
 
@@ -57,5 +59,22 @@ function handleRequest( req, res, next, controller, handler ) {
 		return next( result );
 	}
 
-	res.send( result );
+	res.send( convertResult( result ) );
+
+	function convertResult( data ) {
+		if( data instanceof DataObject ) {
+			return data.data;
+		}
+
+		// Assume that if the first element in the array is a DataObject
+		// then it is an array of DataObjects.
+		if( data instanceof Array
+			&& data.length
+			&& data[0] instanceof DataObject
+		) {
+			return data.map( x => x.data );
+		}
+
+		return data;
+	}
 }
