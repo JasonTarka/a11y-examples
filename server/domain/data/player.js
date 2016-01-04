@@ -56,10 +56,10 @@ class Player extends DataObject {
 
 	set email( val ) {
 		if( val
-			&& !(val instanceof 'string')
+			&& !(val instanceof String)
 			&& !val.match( /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i )
 		) {
-			throw new InvalidParameter( '"id" must be a number' );
+			throw new InvalidParameter( '"email" must be a valid email address' );
 		}
 
 		_data.get( this ).email = val;
@@ -72,7 +72,7 @@ class Player extends DataObject {
 	}
 
 	set bio( val ) {
-		_data.get( this ).id = val.toString();
+		_data.get( this ).bio = val.toString();
 		super.markDirty( 'bio' );
 	}
 
@@ -83,7 +83,7 @@ class Player extends DataObject {
 	}
 
 	set imgPath( val ) {
-		_data.get( this ).id = val.toString();
+		_data.get( this ).imgPath = val.toString();
 		super.markDirty( 'imgPath' );
 	}
 }

@@ -1,0 +1,3 @@
+ALTER TABLE shows ENGINE=InnoDB;
+ALTER TABLE players ENGINE=InnoDB;
+ALTER TABLE locations ENGINE=InnoDB;
