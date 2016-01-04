@@ -8,6 +8,7 @@ let app = express();
 module.exports = app;
 
 let controllers = [
+	require( './controllers/auth.controller' )(),
 	require( './controllers/player.controller' )()
 ];
 
@@ -20,7 +21,19 @@ controllers.forEach( controller => {
 	routing.routes.forEach( route => {
 		setupRouteParams( route.route );
 
-		router.use(
+		let routerMethod = router.get,
+			method = route.method ? route.method.toLowerCase() : null;
+
+		console.log( 'Method is: ', method );
+		if( method && router[method] ) {
+			routerMethod = router[method];
+		}
+
+		console.log(
+			'Adding ' + (route.method || 'GET') + ' /api' + baseRoute + route.route
+		);
+		routerMethod.call(
+			router,
 			route.route,
 			( req, res, next ) => handleRequest( req, res, next, controller, route.function )
 		);
@@ -48,7 +61,8 @@ controllers.forEach( controller => {
 
 function handleRequest( req, res, next, controller, handler ) {
 	let routeParams = req.routeParams,
-		result = handler.call( controller, routeParams );
+		body = req.body,
+		result = handler.call( controller, routeParams, body );
 
 	if( result instanceof Promise ) {
 		return result.then( val => res.send( convertResult( val ) ) )

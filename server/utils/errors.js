@@ -1,17 +1,44 @@
 'use strict';
 
-class InvalidParameter extends Error {
+/***** 4xx *****/
+
+class BadRequest extends Error {
+	constructor( message ) {
+		super( message || 'Bad Request Parameters' );
+		this.name = 'Bad Request';
+		this.status = 400;
+	}
+}
+
+class InvalidParameter extends BadRequest {
 	constructor( message ) {
 		super( message || 'Invalid Parameter' );
-		super.message = message || 'Invalid Parameter';
-		this.status = 400;
+	}
+}
+
+class Forbidden extends Error {
+	constructor( message ) {
+		super( message || 'Forbidden' );
+		this.name = 'Forbidden';
+		this.status = 403;
 	}
 }
 
 class NotFound extends Error {
 	constructor( message ) {
 		super( message || 'Not Found' );
+		this.name = 'Not Found';
 		this.status = 404;
+	}
+}
+
+/***** 5xx *****/
+
+class InternalServerError extends Error {
+	constructor( message ) {
+		super( message );
+		this.name = 'Internal Server Error';
+		this.status = 500;
 	}
 }
 
@@ -19,10 +46,9 @@ class NotFound extends Error {
  * For when a function has not been implemented, or correctly overridden.
  * Should never reach the user, but results in a generic 500 error.
  */
-class FunctionNotImplemented extends Error {
+class FunctionNotImplemented extends InternalServerError {
 	constructor( message ) {
 		super( message || 'Function not implemented' );
-		this.status = 500;
 	}
 }
 
@@ -30,7 +56,7 @@ class FunctionNotImplemented extends Error {
  * For when a feature has not been implemented in the API.
  * Specifically a 501 error.
  */
-class FeatureNotImplemented extends Error {
+class FeatureNotImplemented extends InternalServerError {
 	constructor( message ) {
 		super( message || 'Not Implemented' );
 		this.status = 501;
@@ -38,7 +64,10 @@ class FeatureNotImplemented extends Error {
 }
 
 module.exports = {
+	BadRequest: BadRequest,
+	Forbidden: Forbidden,
 	NotFound: NotFound,
+
 	InvalidParameter: InvalidParameter,
 	FunctionNotImplemented: FunctionNotImplemented,
 	FeatureNotImplemented: FeatureNotImplemented
