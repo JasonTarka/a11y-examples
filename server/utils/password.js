@@ -9,9 +9,11 @@ let scrypt = require( 'scrypt' );
 function hashPassword( password ) {
 	const MAX_TIME = 0.9; // Maximum time to spend hashing (in seconds)
 
-	return scrypt.params( MAX_TIME )
-		.then( params => scrypt.kdf( password, params ) )
-		.then( hash => hash.toString( 'base64' ) );
+	let params = scrypt.paramsSync( MAX_TIME );
+	let hashBuffer = scrypt.kdfSync( password, params );
+	let hash = hashBuffer.toString( 'base64' );
+
+	return hash;
 }
 
 function verifyPassword( hash, password ) {

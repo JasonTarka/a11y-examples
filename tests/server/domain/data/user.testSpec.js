@@ -33,9 +33,10 @@ describe( 'User data object', () => {
 		user.data.should.have.properties( {
 			id: id,
 			username: username,
-			password: password,
 			playerId: playerId
 		} );
+
+		user.data.should.not.have.property( 'password' );
 	} );
 
 	describe( 'dirtying fields', () => {

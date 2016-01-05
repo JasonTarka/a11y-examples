@@ -1,24 +1,40 @@
 'use strict';
 
+let userProvider = require( '../../domain/providers/user.provider' ),
+	User = require( '../../domain/data/user' );
+
 module.exports = construct;
 
 class UserController {
 	constructor() {
-		this._provider = require( '../../domain/providers/player.provider' )();
+	}
+
+	/**
+	 * @returns {UserProvider}
+	 * @private
+	 */
+	get _provider() {
+		return userProvider();
 	}
 
 	list() {
-		return this._provider.fetchPlayers();
+		return this._provider.fetchUsers();
 	}
 
 	view( routeParams ) {
-		let playerId = routeParams.player;
+		let userId = routeParams.user;
 
-		return this._provider.fetchPlayer( playerId );
+		return this._provider.fetchUsers( userId );
 	}
 
 	create( routeParams, body ) {
+		// TODO: permission checks
+		let user = new User();
+		user.username = body.username;
+		user.password = body.password;
+		user.playerId = body.playerId;
 
+		return this._provider.createUser( user );
 	}
 
 	get routing() {
@@ -41,7 +57,7 @@ class UserController {
 					route: '/',
 					method: 'GET',
 					function: this.list,
-					authenticated: false
+					authenticated: true
 				}
 			]
 		};

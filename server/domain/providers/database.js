@@ -34,6 +34,17 @@ class Database {
 		} );
 	}
 
+	/**
+	 * Execute an INSERT query, getting the newly inserted ID as a result
+	 * @param sql The SQL to execute
+	 * @param params The ordered parameters of the SQL
+	 * @returns {Promise.<Number>}
+	 */
+	executeInsert( sql, params ) {
+		return this.executeQuery( sql, params )
+			.then( result => result.insertId );
+	}
+
 	get _conn() {
 		return new Promise( ( resolve, reject ) => {
 			this._pool.getConnection( ( err, connection ) => {

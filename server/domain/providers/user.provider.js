@@ -12,6 +12,18 @@ class UserProvider {
 		this._db = database();
 	}
 
+	/**
+	 * @param user {User}
+	 */
+	createUser( user ) {
+		let sql = 'INSERT INTO users(username, password, playerId) ' +
+				  'VALUES(?, ?, ?)',
+			values = [user.username, user.password, user.playerId];
+
+		return this._db.executeInsert( sql, values )
+			.then( newId => this.fetchUser( newId ) );
+	}
+
 	fetchUsers() {
 		let sql = 'SELECT * FROM users WHERE deleted = 0';
 

@@ -6,32 +6,17 @@ let should = require( 'should' ),
 
 describe( 'password utils', () => {
 	describe( 'hash()', () => {
-		it( 'should eventually return a base64-encoded string', done => {
-			passwordUtils.hash( 'password' )
-				.then( hash => {
-					console.log( hash );
-					should( hash ).not.be.undefined()
-						.and.not.null()
-						.and.be.a.String();
-
-					done();
-				} )
-				.catch( done );
+		it( 'should return a base64-encoded string', () => {
+			let hash = passwordUtils.hash( 'password' );
+			should( hash ).not.be.undefined()
+				.and.not.null()
+				.and.be.a.String();
 		} );
 	} );
 
 	describe( 'verify()', () => {
 		const pass = 'this is the correct password';
-		var hash;
-
-		beforeEach( done => {
-			passwordUtils.hash( pass )
-				.then( h => {
-					hash = h;
-					done();
-				} )
-				.catch( done );
-		} );
+		let hash = passwordUtils.hash( pass );
 
 		it( 'should eventually return true for a correct password', done => {
 			passwordUtils.verify( hash, pass )
