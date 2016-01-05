@@ -1,7 +1,9 @@
 'use strict';
 
 let express = require( 'express' ),
-	DataObject = require( '../domain/data/dataObject' );
+
+	DataObject = require( '../domain/data/dataObject' ),
+	authenticate = require( './auth' );
 
 let app = express();
 
@@ -9,7 +11,8 @@ module.exports = app;
 
 let controllers = [
 	require( './controllers/auth.controller' )(),
-	require( './controllers/player.controller' )()
+	require( './controllers/player.controller' )(),
+	require( './controllers/user.controller' )()
 ];
 
 controllers.forEach( controller => {
@@ -24,19 +27,30 @@ controllers.forEach( controller => {
 		let routerMethod = router.get,
 			method = route.method ? route.method.toLowerCase() : null;
 
-		console.log( 'Method is: ', method );
 		if( method && router[method] ) {
 			routerMethod = router[method];
 		}
 
 		console.log(
-			'Adding ' + (route.method || 'GET') + ' /api' + baseRoute + route.route
+			'Adding '
+			+ (route.method || 'GET')
+			+ '\t/api' + baseRoute + route.route
+			+ (route.authenticated ? '\t\tAuthenticated' : '')
 		);
-		routerMethod.call(
-			router,
-			route.route,
-			( req, res, next ) => handleRequest( req, res, next, controller, route.function )
+
+		let handle = ( req, res, next ) => handleRequest(
+			req,
+			res,
+			next,
+			controller,
+			route.function
 		);
+
+		if( route.authenticated ) {
+			routerMethod.call( router, route.route, authenticate, handle );
+		} else {
+			routerMethod.call( router, route.route, handle );
+		}
 	} );
 
 	app.use( baseRoute, router );
