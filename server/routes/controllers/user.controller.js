@@ -45,7 +45,7 @@ class UserController {
 					route: '/view/:user',
 					method: 'GET',
 					function: this.view,
-					authenticated: false
+					authenticated: true
 				},
 				{
 					route: '/create',
