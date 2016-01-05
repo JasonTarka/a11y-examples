@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = {
-	singleton: singleton
+	singleton: singleton,
+	clone: clone
 };
 
 function singleton( type ) {
@@ -18,4 +19,33 @@ function singleton( type ) {
 	}
 
 	return self.instances.get( type );
+}
+
+function clone( obj ) {
+	var copy;
+
+	if( obj == null || typeof obj !== 'object' ) {
+		return obj;
+	}
+	if( obj instanceof Array ) {
+		copy = [];
+		obj.forEach( x => copy.push( x ) );
+		return copy;
+	}
+	if( obj instanceof Date ) {
+		copy = new Date();
+		copy.setTime( obj.getTime() );
+		return copy;
+	}
+	if( obj instanceof Object ) {
+		copy = obj.constructor();
+
+		Object.keys( obj )
+			.filter( x => obj.hasOwnProperty( x ) )
+			.forEach( key => {
+				copy[key] = clone( obj[key] );
+			} );
+	}
+
+	return copy;
 }

@@ -15,7 +15,8 @@ module.exports = {
 		'semi': [
 			2,
 			'always'
-		]
+		],
+		'no-mixed-spaces-and-tabs': [1, 'smart-tabs']
 	},
 	'env': {
 		'es6': true,

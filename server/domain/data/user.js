@@ -2,7 +2,8 @@
 
 let DataObject = require( './dataObject' ),
 	InvalidParameter = require( '../../utils/errors' ).InvalidParameter,
-	passwordUtils = require( '../../utils/password' );
+	passwordUtils = require( '../../utils/password' ),
+	utils = require( '../../utils/utils' );
 
 let _data = new WeakMap();
 
@@ -21,7 +22,9 @@ class User extends DataObject {
 	}
 
 	get data() {
-		return _data.get( this );
+		let data = utils.clone( _data.get( this ) );
+		delete data.password;
+		return data;
 	}
 
 	// ----- id -----
