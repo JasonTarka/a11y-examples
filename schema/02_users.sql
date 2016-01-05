@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     username    VARCHAR(50) 	NOT NULL,
     password    VARCHAR(1024)	NOT NULL,
     playerId    INT         	NULL,
+	deleted		BIT				NOT NULL	DEFAULT 0,
 
 	PRIMARY KEY(id),
     CONSTRAINT UNIQUE UK_USERS_username(username),

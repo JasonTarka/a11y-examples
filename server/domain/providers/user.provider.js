@@ -4,6 +4,7 @@ module.exports = construct;
 
 let database = require( './database' ),
 	singleton = require( '../../utils/utils' ).singleton,
+	errors = require( '../../utils/errors' ),
 	User = require( '../data/user' );
 
 class UserProvider {
@@ -12,7 +13,7 @@ class UserProvider {
 	}
 
 	fetchUsers() {
-		let sql = 'SELECT * FROM users';
+		let sql = 'SELECT * FROM users WHERE deleted = 0';
 
 		return new Promise( ( resolve, reject ) => {
 			this._db.executeQuery( sql )
@@ -24,15 +25,15 @@ class UserProvider {
 	}
 
 	fetchUser( userId ) {
-		let sql = 'SELECT * FROM users WHERE id = ?';
+		let sql = 'SELECT * FROM users WHERE id = ? AND deleted = 0';
 
 		return new Promise( ( resolve, reject ) => {
 			this._db.executeQuery( sql, [userId] )
 				.then( users => {
 					if( !users || users.length == 0 ) {
-						let err = new Error( 'User not found' );
-						err.status = 404;
-						return reject( err );
+						return reject(
+							new errors.NotFound( 'User not found' )
+						);
 					}
 					resolve( createUser( users[0] ) );
 				} )
@@ -48,7 +49,7 @@ class UserProvider {
 	 * @returns {Promise}
 	 */
 	tryFetchUserByUsername( username ) {
-		let sql = 'SELECT * FROM users WHERE username = ?';
+		let sql = 'SELECT * FROM users WHERE username = ? AND deleted = 0';
 
 		return new Promise( ( resolve, reject ) => {
 			this._db.executeQuery( sql, [username] )

@@ -49,7 +49,6 @@ function createPlayer( row ) {
 		row.bio,
 		row.imgPath
 	);
-	console.log( player );
 	return player;
 }
 
