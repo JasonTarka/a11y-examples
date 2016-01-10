@@ -3,7 +3,8 @@
 module.exports = construct;
 
 let RoutingInfo = require( '../data/routingInfo' ),
-	Route = require( '../data/route' );
+	Route = require( '../data/route' ),
+	permissions = require( '../../utils/enums' ).permissions;
 
 
 class PlayerController {
@@ -21,6 +22,20 @@ class PlayerController {
 		return this._provider.fetchPlayer( playerId );
 	}
 
+	update( data ) {
+		let playerId = data.routeParams.player,
+			body = data.body;
+
+		return data.user.hasPermission( permissions.ManagePlayers )
+			.then( () => this._provider.fetchPlayer( playerId ) )
+			.then( player => {
+				player.name = body.name || player.name;
+				player.email = body.email || player.email;
+				player.bio = body.bio || player.bio;
+				return player.save();
+			} );
+	}
+
 	get routing() {
 		return new RoutingInfo(
 			'/players',
@@ -30,7 +45,13 @@ class PlayerController {
 			),
 			new Route(
 				'/:player',
-				this.list
+				this.view
+			),
+			new Route(
+				'/:player',
+				this.update,
+				'PUT',
+				true
 			)
 		);
 	}

@@ -1,7 +1,8 @@
 'use strict';
 
 let DataObject = require( './dataObject' ),
-	InvalidParameter = require( '../../utils/errors' ).InvalidParameter;
+	InvalidParameter = require( '../../utils/errors' ).InvalidParameter,
+	playerProvider = require( '../providers/player.provider' );
 
 class Player extends DataObject {
 	constructor( id, name, email, bio, imgPath ) {
@@ -68,6 +69,15 @@ class Player extends DataObject {
 
 	set imgPath( val ) {
 		this._setFieldVal( 'imgPath', val.toString() );
+	}
+
+	save() {
+		if( !this.id ) {
+			throw new Error( 'Cannot create user' );
+		}
+
+		return playerProvider().updatePlayer( this )
+			.then( () => this );
 	}
 }
 
