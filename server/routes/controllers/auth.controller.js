@@ -13,6 +13,7 @@ let jwt = require( 'jsonwebtoken' ),
 
 class AuthController {
 	constructor() {
+		this.jwtSecret = process.env.TOTE_JWT_SECRET;
 	}
 
 	/**
@@ -48,7 +49,8 @@ class AuthController {
 					throw new errors.Forbidden( errorMessage );
 				}
 
-				return passwordUtils.verify( user.password, body.password )
+				return passwordUtils
+					.verify( user.password, body.password, user.salt )
 					.then( isValid => {
 						if( !isValid ) {
 							throw new errors.Forbidden( errorMessage );
@@ -62,10 +64,9 @@ class AuthController {
 							{
 								id: user.id,
 								username: user.username,
-								playerId: user.playerId,
 								sessionKey: authSession.sessionKey
 							},
-							process.env.TOTE_JWT_SECRET
+							this.jwtSecret
 						);
 
 						return {

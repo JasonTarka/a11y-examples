@@ -4,7 +4,9 @@
   "description": "A backend API and UI frontend for managing shows, players, etc. for Theatre On The Edge.",
   "main": "server/index.js",
   "scripts": {
-    "test": "mocha ./tests/**/*.testSpec.js"
+    "test": "mocha ./tests/**/*.testSpec.js && eslint server/** tests/**",
+    "start": "node server/express.js",
+    "lint": "eslint server/** tests/**"
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,7 @@
     "mockery": "^1.4.0",
     "node-gyp": "^3.2.1",
     "should": "^8.0.2",
+    "should-sinon": "0.0.3",
     "sinon": "^1.17.2"
   },
   "dependencies": {

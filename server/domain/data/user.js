@@ -7,16 +7,18 @@ let DataObject = require( './dataObject' ),
 	userProvider = require( '../providers/user.provider' ),
 	errors = require( '../../utils/errors' );
 
-const MIN_PASSWORD_LENGTH = 8;
+const MIN_PASSWORD_LENGTH = 8,
+	MAX_SALT_LENGTH = 20;
 
 let _permissions = new WeakMap();
 
 class User extends DataObject {
-	constructor( id, username, password, playerId ) {
+	constructor( id, username, password, salt, playerId ) {
 		super( {
 			id: id,
 			username: username,
 			password: password,
+			salt: salt,
 			playerId: playerId
 		} );
 	}
@@ -24,6 +26,7 @@ class User extends DataObject {
 	get data() {
 		let data = this._getFieldVals();
 		delete data.password;
+		delete data.salt;
 		return data;
 	}
 
@@ -67,7 +70,16 @@ class User extends DataObject {
 			);
 		}
 
-		this._setFieldVal( 'password', passwordUtils.hash( val ) );
+		let salt = utils.generateRandomString( MAX_SALT_LENGTH ),
+			password = passwordUtils.hash( val, salt );
+
+		this._setFieldVal( 'salt', salt );
+		this._setFieldVal( 'password', password );
+	}
+
+	// ----- salt -----
+	get salt() {
+		return this._getFieldVal( 'salt' );
 	}
 
 	// ----- player ID -----

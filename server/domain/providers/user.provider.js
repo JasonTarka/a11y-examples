@@ -17,9 +17,9 @@ class UserProvider {
 	 * @param user {User}
 	 */
 	createUser( user ) {
-		let sql = 'INSERT INTO users(username, password, playerId) ' +
-				  'VALUES(?, ?, ?)',
-			values = [user.username, user.password, user.playerId];
+		let sql = 'INSERT INTO users(username, password, salt, playerId) ' +
+				  'VALUES(?, ?, ?, ?)',
+			values = [user.username, user.password, user.salt, user.playerId];
 
 		return this._db.executeInsert( sql, values )
 			.then( newId => this.fetchUser( newId ) );
@@ -90,6 +90,7 @@ function createUser( row ) {
 		row.id,
 		row.username,
 		row.password,
+		row.salt,
 		row.playerId
 	);
 	return user;

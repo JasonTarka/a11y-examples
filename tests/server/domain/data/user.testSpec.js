@@ -3,17 +3,17 @@
 let should = require( 'should' ),
 	mockery = require( 'mockery' ),
 	sinon = require( 'sinon' ),
+	utils = require( '../../../../server/utils/utils' ),
+	passwordUtils = require( '../../../../server/utils/password' ),
 	errors = require( '../../../../server/utils/errors' );
 
 describe( 'User data object', () => {
-	mockery.enable( {
-		warnOnUnregistered: false
-	} );
 	var User;
 
 	const id = 56,
 		username = 'my username',
 		password = '123456',
+		salt = 'pepper',
 		playerId = 45;
 
 	/** @type {User} */
@@ -21,17 +21,28 @@ describe( 'User data object', () => {
 		/** @type {UserProviderMock} */
 		userProviderMock;
 
+	before( () => {
+		mockery.enable( {
+			warnOnUnregistered: false
+		} );
+	} );
+
+	after( () => {
+		mockery.disable();
+	} );
+
 	beforeEach( () => {
 		userProviderMock = new UserProviderMock();
-
-		mockery.enable();
 		mockery.registerMock(
 			'../providers/user.provider',
 			() => userProviderMock
 		);
 
+		// Ensure we're not using the cached version from other tests
+		mockery.registerAllowable( '../../../../server/domain/data/user', true );
+
 		User = require( '../../../../server/domain/data/user' );
-		user = new User( id, username, password, playerId );
+		user = new User( id, username, password, salt, playerId );
 	} );
 
 	afterEach( () => {
@@ -39,11 +50,12 @@ describe( 'User data object', () => {
 	} );
 
 	it( 'should populate fields from constructor', () => {
-		user = new User( id, username, password, playerId );
+		user = new User( id, username, password, salt, playerId );
 
 		user.id.should.equal( id );
 		user.username.should.equal( username );
 		user.password.should.equal( password );
+		user.salt.should.equal( salt );
 		user.playerId.should.equal( playerId );
 	} );
 
@@ -58,7 +70,59 @@ describe( 'User data object', () => {
 			playerId: playerId
 		} );
 
-		user.data.should.not.have.property( 'password' );
+		user.data.should.not.have.property( 'password' )
+			.and.not.have.property( 'salt' );
+	} );
+
+	describe( 'changing password', () => {
+		it( 'throws error if password is not a string', () => {
+			(() => user.password = 42)
+				.should.throw( errors.InvalidParameter );
+		} );
+
+		it( 'throws error if password is too short', () => {
+			(() => user.password = 'short')
+				.should.throw( errors.InvalidParameter );
+		} );
+
+		it( 'generates a new password and salt, and marks them dirty', () => {
+			const oldPassword = user.password,
+				oldSalt = user.salt;
+
+			user.password = 'some new password';
+
+			user.password.should.not.equal( oldPassword );
+			user.salt.should.not.equal( oldSalt );
+
+			user.isDirty.should.be.true();
+			utils.setToArray( user.dirtyFields )
+				.should.containEql( 'password' )
+				.and.containEql( 'salt' );
+		} );
+
+		it( 'validates with the new password and salt', done => {
+			const password = 'my new password';
+			user.password = password;
+
+			passwordUtils.verify( user.password, password, user.salt )
+				.then( result => {
+					result.should.be.true();
+					done();
+				} )
+				.catch( done );
+		} );
+
+		it( 'should not validate with the wrong salt', done => {
+			const password = 'my new password';
+			user.password = password;
+
+			passwordUtils.verify( user.password, password, 123 )
+				.then( result => {
+					result.should.be.false();
+					done();
+				} )
+				.catch( done );
+		} );
 	} );
 
 	describe( 'dirtying fields', () => {

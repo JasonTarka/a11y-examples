@@ -3,7 +3,8 @@
 module.exports = {
 	singleton: singleton,
 	clone: clone,
-	generateRandomString: generateRandomString
+	generateRandomString: generateRandomString,
+	setToArray: setToArray
 };
 
 let crypto = require( 'crypto' );
@@ -58,4 +59,14 @@ function generateRandomString( maxLength ) {
 
 	return crypto.randomBytes( length )
 		.toString( 'hex' );
+}
+
+function setToArray( set ) {
+	if( !(set instanceof Set) ) {
+		throw new Error( 'Not a set' );
+	}
+
+	let arr = [];
+	set.forEach( x => arr.push( x ) );
+	return arr;
 }
