@@ -19,6 +19,10 @@ class Player extends DataObject {
 		return this._getFieldVals();
 	}
 
+	get identifierFields() {
+		return ['id'];
+	}
+
 	// ----- id -----
 	get id() {
 		return this._getFieldVal( 'id' );

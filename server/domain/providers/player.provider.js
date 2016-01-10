@@ -5,6 +5,7 @@ module.exports = construct;
 let database = require( './database' ),
 	singleton = require( '../../utils/utils' ).singleton,
 	errors = require( '../../utils/errors' ),
+	tools = require( './providerTools' ),
 	Player = require( '../data/player' );
 
 class PlayerProvider {
@@ -46,29 +47,18 @@ class PlayerProvider {
 	 */
 	updatePlayer( player ) {
 		return new Promise( (resolve, reject) => {
-			let sql = 'UPDATE players SET',
-				updates = '',
-				params = [];
-
 			if( !player.isDirty ) {
 				return resolve();
 			}
 
-			let data = player.data;
+			let statement = tools.generateUpdateStatement( player, 'players' );
 
-			player.dirtyFields.forEach( field => {
-				updates += (updates ? ', ' : ' ') + field + ' = ?';
-				params.push( data[field] );
-			} );
-
-			sql = sql + updates + ' WHERE id = ?';
-			params.push( player.id );
-
-			this._db.executeNonQuery( sql, params )
+			this._db.executeNonQuery( statement.sql, statement.params )
 				.then( () => {
 					player.markClean();
 					resolve();
-				} );
+				} )
+				.catch( reject );
 		} );
 	}
 }

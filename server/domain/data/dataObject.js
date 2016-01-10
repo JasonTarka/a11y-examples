@@ -15,12 +15,6 @@ class DataObject {
 		_data.set( this, data );
 	}
 
-	_markDirty( field ) {
-		if( !this.dirtyFields.has( field ) ) {
-			this.dirtyFields.add( field );
-		}
-	}
-
 	markClean() {
 		this.dirtyFields = new Set();
 	}
@@ -32,11 +26,30 @@ class DataObject {
 		return !!this.dirtyFields.size;
 	}
 
+	/***** Methods/Properties to be overridden *****/
+
 	/**
 	 * @returns {Object|object}
 	 */
 	get data() {
 		throw new NotImplemented();
+	}
+
+	/**
+	 * An array of fields that are used as identifiers for this object.
+	 * eg: primary keys in the database
+	 * @returns {string[]}
+	 */
+	get identifierFields() {
+		throw new NotImplemented();
+	}
+
+	/***** Private/Protected methods *****/
+
+	_markDirty( field ) {
+		if( !this.dirtyFields.has( field ) ) {
+			this.dirtyFields.add( field );
+		}
 	}
 
 	_getFieldVal( field ) {
