@@ -7,15 +7,13 @@ let DataObject = require( './dataObject' ),
 	userProvider = require( '../providers/user.provider' ),
 	errors = require( '../../utils/errors' );
 
-let _data = new WeakMap();
-
 const MIN_PASSWORD_LENGTH = 8;
+
+let _permissions = new WeakMap();
 
 class User extends DataObject {
 	constructor( id, username, password, playerId ) {
-		super();
-
-		_data.set( this, {
+		super( {
 			id: id,
 			username: username,
 			password: password,
@@ -24,19 +22,19 @@ class User extends DataObject {
 	}
 
 	get data() {
-		let data = utils.clone( _data.get( this ) );
+		let data = this._getFieldVals();
 		delete data.password;
 		return data;
 	}
 
 	// ----- id -----
 	get id() {
-		return _data.get( this ).id;
+		return this._getFieldVal( 'id' );
 	}
 
 	// ----- username -----
 	get username() {
-		return _data.get( this ).username;
+		return this._getFieldVal( 'username' );
 	}
 
 	set username( val ) {
@@ -50,13 +48,12 @@ class User extends DataObject {
 			throw new InvalidParameter( '"username" is not valid' );
 		}
 
-		_data.get( this ).username = val.toString();
-		super.markDirty( 'username' );
+		this._setFieldVal( 'username', val.toString() );
 	}
 
 	// ----- password -----
 	get password() {
-		return _data.get( this ).password;
+		return this._getFieldVal( 'password' );
 	}
 
 	set password( val ) {
@@ -70,18 +67,16 @@ class User extends DataObject {
 			);
 		}
 
-		_data.get( this ).password = passwordUtils.hash( val );
-		super.markDirty( 'password' );
+		this._setFieldVal( 'password', passwordUtils.hash( val ) );
 	}
 
 	// ----- player ID -----
 	get playerId() {
-		return _data.get( this ).playerId;
+		return this._getFieldVal( 'playerId' );
 	}
 
 	set playerId( val ) {
-		_data.get( this ).playerId = val;
-		super.markDirty( 'playerId' );
+		this._setFieldVal( 'playerId', val );
 	}
 
 	/**
@@ -94,22 +89,21 @@ class User extends DataObject {
 	 */
 	hasPermission( permissionId ) {
 		return new Promise( ( resolve, reject ) => {
-			if( !_data.get( this ).permissions ) {
+			if( !_permissions.get( this ) ) {
 				userProvider().fetchPermissionsForUser( this.id )
 					.then( perms => {
-						let self = _data.get( this );
-						self.permissions = new Set(
+						_permissions.set( this, new Set(
 							perms.map( x => x.id )
-						);
+						) );
 
-						if( _data.get( this ).permissions.has( permissionId ) ) {
+						if( _permissions.get( this ).has( permissionId ) ) {
 							resolve();
 						} else {
 							reject( new errors.NotAuthorized() );
 						}
 					} )
 					.catch( reject );
-			} else if( _data.get( this ).permissions.has( permissionId ) ) {
+			} else if( _permissions.get( this ).has( permissionId ) ) {
 				resolve();
 			} else {
 				reject();

@@ -3,13 +3,9 @@
 let DataObject = require( './dataObject' ),
 	InvalidParameter = require( '../../utils/errors' ).InvalidParameter;
 
-let _data = new WeakMap();
-
 class Player extends DataObject {
 	constructor( id, name, email, bio, imgPath ) {
-		super();
-
-		_data.set( this, {
+		super( {
 			id: id,
 			name: name,
 			email: email,
@@ -19,39 +15,29 @@ class Player extends DataObject {
 	}
 
 	get data() {
-		return _data.get( this );
+		return this._getFieldVals();
 	}
 
 	// ----- id -----
 	get id() {
-		return _data.get( this ).id;
-	}
-
-	set id( val ) {
-		if( !isFinite( val ) ) {
-			throw new InvalidParameter( '"id" must be a number' );
-		}
-
-		_data.get( this ).id = val;
-		super.markDirty( 'id' );
+		return this._getFieldVal( 'id' );
 	}
 
 	// ----- name -----
 	get name() {
-		return _data.get( this ).name;
+		return this._getFieldVal( 'name' );
 	}
 
 	set name( val ) {
 		if( !val ) {
 			throw new InvalidParameter( '"name" must not be empty' );
 		}
-		_data.get( this ).name = val.toString();
-		super.markDirty( 'name' );
+		this._setFieldVal( 'name', val.toString() );
 	}
 
 	// ----- email -----
 	get email() {
-		return _data.get( this ).email;
+		return this._getFieldVal( 'email' );
 	}
 
 	set email( val ) {
@@ -62,29 +48,26 @@ class Player extends DataObject {
 			throw new InvalidParameter( '"email" must be a valid email address' );
 		}
 
-		_data.get( this ).email = val;
-		super.markDirty( 'email' );
+		this._setFieldVal( 'email', val.toString() );
 	}
 
 	// ----- bio -----
 	get bio() {
-		return _data.get( this ).bio;
+		return this._getFieldVal( 'bio' );
 	}
 
 	set bio( val ) {
-		_data.get( this ).bio = val.toString();
-		super.markDirty( 'bio' );
+		this._setFieldVal( 'bio', val.toString() );
 	}
 
 	// ----- imgPath -----
 
 	get imgPath() {
-		return _data.get( this ).imgPath;
+		return this._getFieldVal( 'imgPath' );
 	}
 
 	set imgPath( val ) {
-		_data.get( this ).imgPath = val.toString();
-		super.markDirty( 'imgPath' );
+		this._setFieldVal( 'imgPath', val.toString() );
 	}
 }
 
