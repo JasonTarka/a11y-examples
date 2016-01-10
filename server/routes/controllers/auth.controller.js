@@ -20,7 +20,9 @@ class AuthController {
 		return userProvider();
 	}
 
-	login( routeParams, body ) {
+	login( data ) {
+		let body = data.body;
+
 		if( !body || !body.username || !body.password ) {
 			throw new errors.BadRequest(
 				'Must include a username and password'

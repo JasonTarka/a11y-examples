@@ -5,7 +5,8 @@ module.exports = construct;
 let database = require( './database' ),
 	singleton = require( '../../utils/utils' ).singleton,
 	errors = require( '../../utils/errors' ),
-	User = require( '../data/user' );
+	User = require( '../data/user' ),
+	Permission = require( '../data/permission' );
 
 class UserProvider {
 	constructor() {
@@ -76,11 +77,11 @@ class UserProvider {
 	}
 
 	fetchPermissionsForUser( userId ) {
-		let sql = 'SELECT id FROM permissions WHERE userId = ?',
+		let sql = 'SELECT permissionId FROM user_permissions WHERE userId = ?',
 			params = [userId];
 
 		return this._db.executeQuery( sql, params )
-			.then( createPermission );
+			.then( rows => rows.map( createPermission ) );
 	}
 }
 
@@ -95,7 +96,10 @@ function createUser( row ) {
 }
 
 function createPermission( row ) {
-	let permission = new Permission( row.id, row.name );
+	let permission = new Permission(
+		row.id || row.permissionId,
+		row.name
+	);
 	return permission;
 }
 

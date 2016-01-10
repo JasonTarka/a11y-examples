@@ -1,7 +1,8 @@
 'use strict';
 
 let userProvider = require( '../../domain/providers/user.provider' ),
-	User = require( '../../domain/data/user' );
+	User = require( '../../domain/data/user' ),
+	permissions = require( '../../utils/enums' ).permissions;
 
 module.exports = construct;
 
@@ -21,20 +22,23 @@ class UserController {
 		return this._provider.fetchUsers();
 	}
 
-	view( routeParams ) {
-		let userId = routeParams.user;
+	view( data ) {
+		let userId = data.routeParams.user;
 
 		return this._provider.fetchUsers( userId );
 	}
 
-	create( routeParams, body ) {
-		// TODO: permission checks
-		let user = new User();
-		user.username = body.username;
-		user.password = body.password;
-		user.playerId = body.playerId;
+	create( data ) {
+		return data.user.hasPermission( permissions.ManagePlayers )
+			.then( () => {
+				let body = data.body;
+				let user = new User();
+				user.username = body.username;
+				user.password = body.password;
+				user.playerId = body.playerId;
 
-		return this._provider.createUser( user );
+				return this._provider.createUser( user );
+			} );
 	}
 
 	get routing() {

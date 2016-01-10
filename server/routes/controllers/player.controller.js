@@ -11,8 +11,8 @@ class PlayerController {
 		return this._provider.fetchPlayers();
 	}
 
-	view( routeParams ) {
-		let playerId = routeParams.player;
+	view( data ) {
+		let playerId = data.routeParams.player;
 
 		return this._provider.fetchPlayer( playerId );
 	}

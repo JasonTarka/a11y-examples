@@ -74,9 +74,12 @@ controllers.forEach( controller => {
 } );
 
 function handleRequest( req, res, next, controller, handler ) {
-	let routeParams = req.routeParams,
-		body = req.body,
-		result = handler.call( controller, routeParams, body );
+	let data = {
+			routeParams: req.routeParams,
+			body: req.body,
+			user: req.user
+		},
+		result = handler.call( controller, data );
 
 	if( result instanceof Promise ) {
 		return result.then( val => res.send( convertResult( val ) ) )
