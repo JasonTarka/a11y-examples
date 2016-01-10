@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS user_auth_sessions (
+	userId			INT			NOT NULL,
+	sessionKey		VARCHAR(20)	NOT NULL,
+	dateCreated		TIMESTAMP	NOT NULL	DEFAULT NOW(),
+	validUntilDate	TIMESTAMP	NOT NULL,
+	lastUsedDate	TIMESTAMP	NOT NULL,
+
+	PRIMARY KEY(userId, sessionKey),
+	FOREIGN KEY FK_USER_AUTH_SESSIONS_userId(userId) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
