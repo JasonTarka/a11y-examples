@@ -3,7 +3,9 @@
 let DataObject = require( './dataObject' ),
 	InvalidParameter = require( '../../utils/errors' ).InvalidParameter,
 	passwordUtils = require( '../../utils/password' ),
-	utils = require( '../../utils/utils' );
+	utils = require( '../../utils/utils' ),
+	userProvider = require( '../providers/user.provider' ),
+	errors = require( '../../utils/errors' );
 
 let _data = new WeakMap();
 
@@ -80,6 +82,39 @@ class User extends DataObject {
 	set playerId( val ) {
 		_data.get( this ).playerId = val;
 		super.markDirty( 'playerId' );
+	}
+
+	/**
+	 * Checks if the user has a given permission or not.
+	 * Resolves the promise if the permission is available, and rejects it
+	 * otherwise.
+	 *
+	 * @param permissionId
+	 * @returns {Promise}
+	 */
+	hasPermission( permissionId ) {
+		return new Promise( ( resolve, reject ) => {
+			if( !_data.get( this ).permissions ) {
+				userProvider().fetchPermissionsForUser( this.id )
+					.then( perms => {
+						let self = _data.get( this );
+						self.permissions = new Set(
+							perms.map( x => x.id )
+						);
+
+						if( _data.get( this ).permissions.has( permissionId ) ) {
+							resolve();
+						} else {
+							reject( new errors.NotAuthorized() );
+						}
+					} )
+					.catch( reject );
+			} else if( _data.get( this ).permissions.has( permissionId ) ) {
+				resolve();
+			} else {
+				reject();
+			}
+		} );
 	}
 }
 

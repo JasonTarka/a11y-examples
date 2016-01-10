@@ -74,6 +74,14 @@ class UserProvider {
 				.catch( reject );
 		} );
 	}
+
+	fetchPermissionsForUser( userId ) {
+		let sql = 'SELECT id FROM permissions WHERE userId = ?',
+			params = [userId];
+
+		return this._db.executeQuery( sql, params )
+			.then( createPermission );
+	}
 }
 
 function createUser( row ) {
@@ -84,6 +92,11 @@ function createUser( row ) {
 		row.playerId
 	);
 	return user;
+}
+
+function createPermission( row ) {
+	let permission = new Permission( row.id, row.name );
+	return permission;
 }
 
 /**

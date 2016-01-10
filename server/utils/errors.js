@@ -16,6 +16,14 @@ class InvalidParameter extends BadRequest {
 	}
 }
 
+class NotAuthorized extends Error {
+	constructor( message ) {
+		super( message || 'Not Authorized' );
+		this.name = 'Not Authorized';
+		this.status = 401;
+	}
+}
+
 class Forbidden extends Error {
 	constructor( message ) {
 		super( message || 'Forbidden' );
@@ -65,6 +73,7 @@ class FeatureNotImplemented extends InternalServerError {
 
 module.exports = {
 	BadRequest: BadRequest,
+	NotAuthorized: NotAuthorized,
 	Forbidden: Forbidden,
 	NotFound: NotFound,
 
