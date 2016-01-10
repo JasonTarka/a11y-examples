@@ -45,6 +45,21 @@ class Database {
 			.then( result => result.insertId );
 	}
 
+	/**
+	 * Execute a non-query command (UPDATE, DELETE, etc.) without getting any
+	 * return value from the promise.
+	 * @param sql
+	 * @param params
+	 * @returns {Promise}
+	 */
+	executeNonQuery( sql, params ) {
+		return new Promise( ( resolve, reject ) => {
+			this.executeQuery( sql, params )
+				.then( () => resolve() )
+				.catch( reject );
+		} );
+	}
+
 	get _conn() {
 		return new Promise( ( resolve, reject ) => {
 			this._pool.getConnection( ( err, connection ) => {

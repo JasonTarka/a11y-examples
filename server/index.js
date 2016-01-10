@@ -16,7 +16,7 @@ app.use( '/api', api );
 
 // Handle anything that doesn't have a route
 app.use( ( req, res, next ) => {
-	let err = new errors.NotFound();
+	let err = new errors.NotFound( 'Route does not exist' );
 	next( err );
 } );
 

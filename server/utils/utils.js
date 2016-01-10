@@ -2,8 +2,11 @@
 
 module.exports = {
 	singleton: singleton,
-	clone: clone
+	clone: clone,
+	generateRandomString: generateRandomString
 };
+
+let crypto = require( 'crypto' );
 
 function singleton( type ) {
 	var self = singleton;
@@ -48,4 +51,11 @@ function clone( obj ) {
 	}
 
 	return copy;
+}
+
+function generateRandomString( maxLength ) {
+	let length = Math.floor( maxLength / 2 );
+
+	return crypto.randomBytes( length )
+		.toString( 'hex' );
 }

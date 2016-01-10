@@ -8,6 +8,7 @@ let jwt = require( 'jsonwebtoken' ),
 	Route = require( '../data/route' ),
 	errors = require( '../../utils/errors' ),
 	userProvider = require( '../../domain/providers/user.provider' ),
+	authProvider = require( '../../domain/providers/auth.provider' ),
 	passwordUtils = require( '../../utils/password' );
 
 class AuthController {
@@ -20,6 +21,14 @@ class AuthController {
 	 */
 	get _provider() {
 		return userProvider();
+	}
+
+	/**
+	 * @returns {AuthProvider}
+	 * @private
+	 */
+	get _authProvider() {
+		return authProvider();
 	}
 
 	login( data ) {
@@ -36,20 +45,25 @@ class AuthController {
 		return this._provider.tryFetchUserByUsername( body.username )
 			.then( user => {
 				if( user == null ) {
-					return new errors.Forbidden( errorMessage );
+					throw new errors.Forbidden( errorMessage );
 				}
 
 				return passwordUtils.verify( user.password, body.password )
 					.then( isValid => {
 						if( !isValid ) {
-							return new errors.Forbidden( errorMessage );
+							throw new errors.Forbidden( errorMessage );
 						}
-
+					} )
+					.then(
+						() => this._authProvider.createAuthSession( user.id )
+					)
+					.then( authSession => {
 						let token = jwt.sign(
 							{
 								id: user.id,
 								username: user.username,
-								playerId: user.playerId
+								playerId: user.playerId,
+								sessionKey: authSession.sessionKey
 							},
 							process.env.TOTE_JWT_SECRET
 						);

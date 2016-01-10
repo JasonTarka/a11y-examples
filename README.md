@@ -1,4 +1,6 @@
-## Required environment variables
+## Environment Variables
+
+### Required
 
 - `TOTE_DB_HOST`
 - `TOTE_DB_DATABASE`
@@ -6,7 +8,11 @@
 - `TOTE_DB_PASSWORD`
 - `TOTE_JWT_SECRET`
 
-## API
+### Optional
+
+- TOTE_SESSION_LENGTH_MINUTES
+
+## REST API
 
 These are subject to change, and are here for testing reference only.
 
@@ -35,7 +41,7 @@ further requests.
 
 ### Players
 
-#### `GET /api/players/view/:player`
+#### `GET /api/players/:player`
 Fetch the information for an individual Player.
 
 `:player` is the ID of the player to fetch
@@ -55,7 +61,7 @@ Fetch a list of all active Players.
 
 ### Users
 
-#### `GET /api/users/view/:user` (Authenticated)
+#### `GET /api/users/:user` (Authenticated)
 Fetch the information for an individual User.
 
 `:user` is the ID of the User to fetch
@@ -69,7 +75,7 @@ Fetch the information for an individual User.
 }
 ```
 
-#### `POST /api/users/create` (Authenticated)
+#### `POST /api/users` (Authenticated)
 Create a new User.
 
 *Example Body*
