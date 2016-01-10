@@ -2,6 +2,10 @@
 
 module.exports = construct;
 
+let RoutingInfo = require( '../data/routingInfo' ),
+	Route = require( '../data/route' );
+
+
 class PlayerController {
 	constructor() {
 		this._provider = require( '../../domain/providers/player.provider' )();
@@ -18,21 +22,17 @@ class PlayerController {
 	}
 
 	get routing() {
-		return {
-			baseRoute: '/players',
-			routes: [
-				{
-					route: '/view/:player',
-					function: this.view,
-					authenticated: false
-				},
-				{
-					route: '/',
-					function: this.list,
-					authenticated: false
-				}
-			]
-		};
+		return new RoutingInfo(
+			'/players',
+			new Route(
+				'/',
+				this.list
+			),
+			new Route(
+				'/:player',
+				this.list
+			)
+		);
 	}
 }
 

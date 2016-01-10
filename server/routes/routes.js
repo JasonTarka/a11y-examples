@@ -17,33 +17,39 @@ let controllers = [
 
 controllers.forEach( controller => {
 	let router = express.Router(),
-		routing = controller.routing,
-		baseRoute = routing.baseRoute,
+		/** @type {RoutingInfo} */
+		routingInfo = controller.routing,
 		configuredParams = new Set();
 
-	routing.routes.forEach( route => {
+	routingInfo.routes.forEach( route => {
 		setupRouteParams( route.route );
 
 		let routerMethod = router.get,
 			method = route.method ? route.method.toLowerCase() : null;
 
-		if( method && router[method] ) {
+		if( router[method] ) {
 			routerMethod = router[method];
-		}
 
-		console.log(
-			'Adding '
-			+ (route.method || 'GET')
-			+ '\t/api' + baseRoute + route.route
-			+ (route.authenticated ? '\t\tAuthenticated' : '')
-		);
+			console.log(
+				'Adding %s\t/api%s%s',
+				route.method,
+				routingInfo.baseRoute + route.route,
+				(route.authenticated ? '\t\tAuthenticated' : '')
+			);
+		} else {
+			console.error(
+				'Cannot bind route %s %s',
+				route.method,
+				('/api' + routingInfo.baseRoute + route.route)
+			);
+		}
 
 		let handle = ( req, res, next ) => handleRequest(
 			req,
 			res,
 			next,
 			controller,
-			route.function
+			route.handler
 		);
 
 		if( route.authenticated ) {
@@ -53,7 +59,7 @@ controllers.forEach( controller => {
 		}
 	} );
 
-	app.use( baseRoute, router );
+	app.use( routingInfo.baseRoute, router );
 
 	function setupRouteParams( route ) {
 		let matches = route.match( /[/]:([^:/]*)/g );

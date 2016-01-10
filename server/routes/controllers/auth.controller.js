@@ -4,6 +4,8 @@ module.exports = construct;
 
 let jwt = require( 'jsonwebtoken' ),
 
+	RoutingInfo = require( '../data/routingInfo' ),
+	Route = require( '../data/route' ),
 	errors = require( '../../utils/errors' ),
 	userProvider = require( '../../domain/providers/user.provider' ),
 	passwordUtils = require( '../../utils/password' );
@@ -60,17 +62,14 @@ class AuthController {
 	}
 
 	get routing() {
-		return {
-			baseRoute: '/auth',
-			routes: [
-				{
-					route: '/login',
-					method: 'POST',
-					function: this.login,
-					authenticated: false
-				}
-			]
-		};
+		return new RoutingInfo(
+			'/auth',
+			new Route(
+				'/login',
+				this.login,
+				'POST'
+			)
+		);
 	}
 }
 

@@ -1,6 +1,8 @@
 'use strict';
 
-let userProvider = require( '../../domain/providers/user.provider' ),
+let RoutingInfo = require( '../data/routingInfo' ),
+	Route = require( '../data/route' ),
+	userProvider = require( '../../domain/providers/user.provider' ),
 	User = require( '../../domain/data/user' ),
 	permissions = require( '../../utils/enums' ).permissions;
 
@@ -42,29 +44,28 @@ class UserController {
 	}
 
 	get routing() {
-		return {
-			baseRoute: '/users',
-			routes: [
-				{
-					route: '/view/:user',
-					method: 'GET',
-					function: this.view,
-					authenticated: true
-				},
-				{
-					route: '/create',
-					method: 'POST',
-					function: this.create,
-					authenticated: true
-				},
-				{
-					route: '/',
-					method: 'GET',
-					function: this.list,
-					authenticated: true
-				}
-			]
-		};
+
+		return new RoutingInfo(
+			'/users',
+			new Route(
+				'/',
+				this.list,
+				'GET',
+				true
+			),
+			new Route(
+				'/:user',
+				this.view,
+				'GET',
+				true
+			),
+			new Route(
+				'/',
+				this.create,
+				'POST',
+				true
+			)
+		);
 	}
 }
 
