@@ -1,13 +1,13 @@
 'use strict';
 
-let mockery = require( 'mockery' ),
+let should = require( 'should' ),
+	mockery = require( 'mockery' ),
 	sinon = require( 'sinon' ),
 
 	errors = require( '../../../../server/utils/errors' ),
 	Player = require( '../../../../server/domain/data/player' ),
 	permissions = require( '../../../../server/utils/enums' ).permissions;
 
-require( 'should' );
 require( 'should-sinon' );
 
 describe.only( 'Player Controller', () => {
@@ -61,6 +61,11 @@ describe.only( 'Player Controller', () => {
 			}
 		};
 
+		// Ensure we're not using the cached version from other tests
+		mockery.registerAllowable(
+			'../../../../server/routes/controllers/player.controller',
+			true
+		);
 		PlayerController = require(
 			'../../../../server/routes/controllers/player.controller'
 		);
@@ -70,7 +75,7 @@ describe.only( 'Player Controller', () => {
 	afterEach( () => mockery.deregisterAll() );
 
 	describe( 'update', () => {
-		it( 'checks user permission', done => {
+		it( 'enforces Manage Players permission', done => {
 			const requiredPermission = permissions.ManagePlayers;
 
 			user.hasManagePermission = false;
@@ -157,12 +162,70 @@ describe.only( 'Player Controller', () => {
 		} );
 	} );
 
+	describe( 'create', () => {
+		it( 'creates a new player', done => {
+			data.body = {
+				name: 'David Bowie',
+				email: 'david.bowie@example.io',
+				bio: 'Trapped in a tin can',
+				imgPath: '/path/to/bowie.space'
+			};
+			player = null;
+
+			sinon.stub( playerProviderMock, 'createPlayer', newPlayer => {
+				player = newPlayer;
+
+				should( newPlayer ).not.be.undefined()
+					.and.not.be.null();
+				should( newPlayer.id ).be.undefined();
+				newPlayer.name.should.equal( data.body.name );
+				newPlayer.email.should.equal( data.body.email );
+				newPlayer.bio.should.equal( data.body.bio );
+				newPlayer.imgPath.should.equal( data.body.imgPath );
+
+				return newPlayer;
+			} );
+
+			controller.create( data )
+				.then( retPlayer => {
+					playerProviderMock.createPlayer
+						.should.be.calledOnce();
+					retPlayer.should.be.instanceOf( Player );
+					done();
+				} )
+				.catch(
+					err => done( err || new Error( 'Error occurred' ) )
+				);
+		} );
+
+		it( 'enforces Manage Players permission', done => {
+			const requiredPermission = permissions.ManagePlayers;
+
+			user.hasManagePermission = false;
+			sinon.spy( user, 'hasPermission' );
+
+			controller.create( data )
+				.then(
+					() => done( new Error( 'Should have been rejected' ) )
+				)
+				.catch( err => {
+					if( err ) return done( err );
+
+					user.hasPermission
+						.should.be.calledWith( requiredPermission );
+					done();
+				} );
+		} );
+	} );
+
 	function PlayerProviderMock() {
 		this.fetchPlayer = id => new Promise( ( resolve, reject ) =>
 			id == player.id
 				? resolve( player )
 				: reject( new errors.NotFound() )
 		);
+
+		this.createPlayer = function() {};
 	}
 
 	function UserMock() {

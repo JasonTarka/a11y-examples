@@ -72,7 +72,8 @@ class Player extends DataObject {
 	}
 
 	set imgPath( val ) {
-		this._setFieldVal( 'imgPath', val.toString() );
+		val = val ? val.toString() : null;
+		this._setFieldVal( 'imgPath', val );
 	}
 
 	save() {

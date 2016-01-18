@@ -4,12 +4,14 @@ module.exports = construct;
 
 let RoutingInfo = require( '../data/routingInfo' ),
 	Route = require( '../data/route' ),
-	permissions = require( '../../utils/enums' ).permissions;
+	permissions = require( '../../utils/enums' ).permissions,
+	playerProvider = require( '../../domain/providers/player.provider' ),
+	Player = require( '../../domain/data/player' );
 
 
 class PlayerController {
 	constructor() {
-		this._provider = require( '../../domain/providers/player.provider' )();
+		this._provider = playerProvider();
 	}
 
 	list() {
@@ -20,6 +22,21 @@ class PlayerController {
 		let playerId = data.routeParams.player;
 
 		return this._provider.fetchPlayer( playerId );
+	}
+
+	create( data ) {
+		let body = data.body;
+
+		return data.user.hasPermission( permissions.ManagePlayers )
+			.then( () => {
+				let player = new Player();
+				player.name = body.name;
+				player.email = body.email;
+				player.bio = body.bio;
+				player.imgPath = body.imgPath;
+
+				return this._provider.createPlayer( player );
+			} );
 	}
 
 	update( data ) {
@@ -43,6 +60,12 @@ class PlayerController {
 			new Route(
 				'/',
 				this.list
+			),
+			new Route(
+				'/',
+				this.create,
+				'POST',
+				true
 			),
 			new Route(
 				'/:player',

@@ -42,11 +42,25 @@ class PlayerProvider {
 		} );
 	}
 
+	createPlayer( player ) {
+		let sql = 'INSERT INTO players(name, email, bio, imgPath) ' +
+				  'VALUES(?, ?, ?, ?)',
+			values = [
+				player.name,
+				player.email,
+				player.bio,
+				player.imgPath
+			];
+
+		return this._db.executeInsert( sql, values )
+			.then( newId => this.fetchPlayer( newId ) );
+	}
+
 	/**
 	 * @param player {Player}
 	 */
 	updatePlayer( player ) {
-		return new Promise( (resolve, reject) => {
+		return new Promise( ( resolve, reject ) => {
 			if( !player.isDirty ) {
 				return resolve();
 			}
