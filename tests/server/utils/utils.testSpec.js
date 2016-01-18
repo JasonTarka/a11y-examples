@@ -82,5 +82,26 @@ describe( 'utils', () => {
 			let copy = utils.clone( obj );
 			copy.should.deepEqual( obj );
 		} );
+
+		it( 'copied a class', () => {
+			class TestClass {
+				constructor( val ) {
+					this.myVal = val;
+				}
+
+				get myVal() {
+					return this._myVal;
+				}
+
+				set myVal( val ) {
+					this._myVal = val;
+				}
+			}
+
+			let obj = new TestClass( 23 );
+			let copy = utils.clone( obj );
+			copy.should.deepEqual( obj );
+			copy.myVal.should.equal( obj.myVal );
+		} );
 	} );
 } );

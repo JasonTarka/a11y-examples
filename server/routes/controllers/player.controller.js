@@ -32,6 +32,7 @@ class PlayerController {
 				player.name = body.name || player.name;
 				player.email = body.email || player.email;
 				player.bio = body.bio || player.bio;
+				player.imgPath = body.imgPath || player.imgPath;
 				return player.save();
 			} );
 	}
@@ -50,7 +51,7 @@ class PlayerController {
 			new Route(
 				'/:player',
 				this.update,
-				'PUT',
+				'PATCH',
 				true
 			)
 		);

@@ -42,7 +42,7 @@ function clone( obj ) {
 		return copy;
 	}
 	if( obj instanceof Object ) {
-		copy = obj.constructor();
+		copy = new obj.constructor();
 
 		Object.keys( obj )
 			.filter( x => obj.hasOwnProperty( x ) )

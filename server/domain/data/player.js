@@ -77,7 +77,7 @@ class Player extends DataObject {
 
 	save() {
 		if( !this.id ) {
-			throw new Error( 'Cannot create user' );
+			throw new Error( 'Cannot create player' );
 		}
 
 		return playerProvider().updatePlayer( this )
