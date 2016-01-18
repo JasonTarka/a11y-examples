@@ -3,6 +3,7 @@
 let express = require( 'express' ),
 	logger = require( 'morgan' ),
 	bodyParser = require( 'body-parser' ),
+	util = require( 'util' ),
 
 	api = require( './routes/routes' ),
 	errors = require( './utils/errors' );
@@ -45,5 +46,5 @@ let server = app.listen( 3000, () => {
 	let host = server.address().address,
 		port = server.address().port;
 
-	console.log( 'App listening at %s', host, port ); // eslint-disable-line
+	util.log( 'App listening at %s:%d', host, port ); // eslint-disable-line
 } );

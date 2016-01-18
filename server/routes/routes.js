@@ -1,6 +1,7 @@
 'use strict';
 
 let express = require( 'express' ),
+	util = require( 'util' ), // Node's util
 
 	DataObject = require( '../domain/data/dataObject' ),
 	authenticate = require( './auth' );
@@ -30,14 +31,14 @@ controllers.forEach( controller => {
 		if( router[method] ) {
 			routerMethod = router[method];
 
-			console.log(
-				'Adding %s\t/api%s%s',
-				route.method,
-				routingInfo.baseRoute + route.route,
-				(route.authenticated ? '\t\tAuthenticated' : '')
+			util.log(
+				'Adding %s %s /api%s',
+				pad( route.authenticated ? 'Authenticated' : '', 13 ),
+				pad( route.method, 5 ),
+				routingInfo.baseRoute + route.route
 			);
 		} else {
-			console.error(
+			util.error(
 				'Cannot bind route %s %s',
 				route.method,
 				('/api' + routingInfo.baseRoute + route.route)
@@ -69,7 +70,7 @@ controllers.forEach( controller => {
 			.filter( name => !configuredParams.has( name ) )
 			.forEach( name => {
 				router.param( name, ( req, res, next, value ) => {
-					console.log( 'Route param "%s" passed with value "%s"', name, value );
+					util.log( 'Route param "%s" passed with value "%s"', name, value );
 					req.routeParams = req.routeParams || {};
 					req.routeParams[name] = value;
 					next();
@@ -114,4 +115,10 @@ function handleRequest( req, res, next, controller, handler ) {
 
 		return data;
 	}
+}
+
+function pad( input, space ) {
+	let str = input.toString();
+	str += new Array( space - str.length + 1 ).join( ' ' );
+	return str;
 }
