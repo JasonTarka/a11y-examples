@@ -1,6 +1,6 @@
 {
   "name": "tote-site",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A backend API and UI frontend for managing shows, players, etc. for Theatre On The Edge.",
   "main": "server/index.js",
   "scripts": {
