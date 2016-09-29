@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Accessible Control Demo</title>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
+			integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+			crossorigin="anonymous"
+	></script>
+	<script src="loader.js"></script>
+</head>
+<body>
+	<h1>Accessible Control Demo</h1>
+
+	<div id="contents"><!-- TODO: Use proper semantic elements -->
+		<div data-src="clickToEdit">
+			{"title": "First Name", "data": "John"}
+		</div>
+		<div data-src="clickToEdit">
+			{"title": "Last Name", "data": "Smith"}
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(() => {
+			const loader = new Loader();
+			loader.loadAll();
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "name": "a11y-examples",
+  "version": "0.0.1",
+  "description": "A set of examples of interactive web controls designed to demonstrate accessibility patterns.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JasonTarka/a11y-examples.git"
+  },
+  "keywords": [
+    "a11y",
+    "accessibility",
+    "WAI-ARIA",
+    "ARIA",
+    "example",
+    "interactive",
+    "click-to-edit",
+    "edit-in-place"
+  ],
+  "author": "Jason Tarka <jason@tarka.ca>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JasonTarka/a11y-examples/issues"
+  },
+  "homepage": "https://github.com/JasonTarka/a11y-examples#readme",
+  "devDependencies": {
+    "express": "^4.14.0"
+  }
+}
