@@ -3,6 +3,7 @@
 class Loader {
 	constructor() {
 		this._loaded = new Set();
+		this._loading = new Set();
 	}
 
 	loadAll() {
@@ -31,9 +32,10 @@ class Loader {
 
 	loadScript( name ) {
 		return new Promise( ( resolve, reject ) => {
-			if( this._loaded.has( name ) ) {
+			if( this._loaded.has( name ) || this._loading.has( name ) ) {
 				resolve();
 			} else {
+				this._loading.add( name );
 				$.getScript( `/examples/${name}/control.js` )
 					.done( () => resolve() )
 					.fail( ( jqxhr, settings, exception ) => reject( exception ) );

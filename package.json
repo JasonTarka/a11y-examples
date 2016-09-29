@@ -4,7 +4,7 @@
   "description": "A set of examples of interactive web controls designed to demonstrate accessibility patterns.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,49 @@
+.clickToEdit .offscreen {
+	position: absolute;
+	left: -10000px;
+	top: auto;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	white-space: nowrap; /* My own addition. Solves issues with NVDA and VoiceOver. */
+}
+
+.clickToEdit .hidden {
+	display: none !important;
+}
+
+.clickToEdit .title {
+	display: inline-block;
+	font-weight: 600;
+	width: 100px;
+}
+
+.clickToEdit .contents {
+	display: inline-block;
+	padding: 5px;
+	border-radius: 5px;
+}
+
+.clickToEdit .contents:hover,
+.clickToEdit .contents.focused {
+	background-color: #CCF;
+	cursor: pointer;
+}
+
+.clickToEdit .contents.focused {
+	border: thin solid #66F;
+	padding: 4px; /* Reduce by one to account for border */
+}
+
+.clickToEdit input {
+	border: thin solid #66F;
+	border-radius: 5px;
+	padding: 5.5px;
+}
+
+.clickToEdit .input {
+	/*box-shadow: 0 0 5px 0 black;*/
+	/*padding: 8px 6px;*/
+	/*margin-left: -6px;*/
+	/*border-radius: 5px;*/
+}

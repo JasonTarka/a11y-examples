@@ -1,0 +1,21 @@
+<div class="clickToEdit">
+	<!-- What should be visible to a screen reader -->
+	<span class="offscreen">
+		<!-- The only element that can actually be focused -->
+		<button class="begin-edit">Click to edit</button>
+	</span>
+
+	<!-- Note the aria-hidden -->
+	<span class="display"
+		  aria-hidden="true"
+	>
+		<span class="title"></span>
+		<span class="contents"></span>
+	</span>
+
+
+	<label class="input hidden">
+		<span class="title"></span>
+		<input type="text" />
+	</label>
+</div>
