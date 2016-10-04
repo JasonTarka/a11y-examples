@@ -3,6 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Accessible Control Demo</title>
+
+	<link rel="stylesheet" href="style.css" />
+
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
 			integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
 			crossorigin="anonymous"
@@ -10,16 +13,37 @@
 	<script src="loader.js"></script>
 </head>
 <body>
-	<h1>Accessible Control Demo</h1>
+	<header>
+		<h1>Accessible Control Demo</h1>
+		<p>
+			This is a demo of various interactive controls created with web
+			accessibility (a11y) in mind. They are designed primarily with
+			screen readers and keyboard users in mind, but are intended to
+			also be visually appealing.
+		</p>
+	</header>
 
-	<div id="contents"><!-- TODO: Use proper semantic elements -->
-		<div data-src="clickToEdit">
-			{"title": "First Name", "contents": "John", "name": "firstName"}
+	<section aria-busy="true">
+		<h2>Customer Information</h2>
+
+		<div class="error hidden"
+			 role="alert"
+		></div>
+
+		<div id="contents">
+			<div data-src="clickToEdit">
+				{"title": "First Name", "contents": "John", "name": "firstName"}
+			</div>
+			<div data-src="clickToEdit">
+				{"title": "Last Name", "contents": "Smith", "name": "lastName"}
+			</div>
 		</div>
-		<div data-src="clickToEdit">
-			{"title": "Last Name", "contents": "Smith", "name": "lastName"}
-		</div>
-	</div>
+	</section>
+
+	<aside>
+		Mostly ignore the makeshift element loading system. However, pay attention
+		to the <code>aria-busy</code> attribute
+	</aside>
 
 	<script type="text/javascript">
 		$(() => {

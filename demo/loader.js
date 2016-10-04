@@ -23,10 +23,14 @@ class Loader {
 			.then( () => this._loaded.add( name ) )
 			.then( () => this.loadHtml( name, node ) )
 			.then( () => new window[className]( node, data ) )
+			.then( () => $( 'section[aria-busy]' ).attr( 'aria-busy', 'false' ) )
 			.catch( error );
 
 		function error( err ) {
 			console.error( `Error occurred loading ${name}: `, err )
+			$( '.error:first' )
+				.removeClass( 'hidden' )
+				.append( `<span>Error occurred loading ${name}</span>` )
 		}
 	}
 
