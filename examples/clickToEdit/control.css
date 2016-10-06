@@ -1,22 +1,7 @@
 /***** Accessibility or Functionality related *****/
-
-.clickToEdit .offscreen {
-	position: absolute;
-	left: -10000px;
-	top: auto;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-	white-space: nowrap; /* My own addition. Solves issues with NVDA and VoiceOver. */
-}
-
-.clickToEdit .hidden {
-	display: none !important;
-}
-
 .clickToEdit .contents:hover,
 .clickToEdit .contents.focused {
-	background-color: #CCF;
+	background-color: #EEF;
 	cursor: pointer;
 }
 

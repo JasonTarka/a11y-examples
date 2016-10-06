@@ -5,6 +5,7 @@
 	<title>Accessible Control Demo</title>
 
 	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="../examples/common/common.css" />
 
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"
 			integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
@@ -31,14 +32,38 @@
 			 role="alert"
 		></div>
 
-		<div id="contents">
+		<fieldset>
+			<legend><h3>John Smith</h3></legend>
+
 			<div data-src="clickToEdit">
 				{"title": "First Name", "contents": "John", "name": "firstName"}
 			</div>
 			<div data-src="clickToEdit">
 				{"title": "Last Name", "contents": "Smith", "name": "lastName"}
 			</div>
-		</div>
+
+			<div data-src="radioGroup">
+				{
+					"name": "customerType",
+					"title": "Customer Type",
+					"description": "In sales, commerce and economics, a customer (sometimes known as a client, buyer, or purchaser) is the recipient of a good, service, product or an idea - obtained from a seller, vendor, or supplier via a financial transaction or exchange for money or some other valuable consideration. An ultimate etymology of \"client\" may imply someone merely inclined to do business, whereas a purchaser procures goods or services on occasion but a customer customarily or habitually engages in transactions (historically: the collection of tolls or taxes). Such distinctions have no contemporary semantic weight.",
+					"options": {
+						"sales": {
+							"summary": "Sales Person",
+							"description": " The primary function of professional salespeople is to generate and close business resulting in revenue. The sales person will accomplish their primary function through a variety of means including phone calls, email, social media, networking, and cold calling. The primary objective of the successful salesperson is to find the consumers to sell to."
+						},
+						"developer": {
+							"summary": "Software Developer",
+							"description": "A software developer is a person concerned with facets of the software development process, including the research, design, programming, and testing of computer software."
+						},
+						"tester": {
+							"summary": "Quality Assurance Tester",
+							"description": "Agile development recognizes that testing is not a separate phase, but an integral part of software development, along with coding. Agile teams use a \"whole-team\" approach to \"baking quality in\" to the software product. Testers on agile teams lend their expertise in eliciting examples of desired behavior from customers, collaborating with the development team to turn those into executable specifications that guide coding. Testing and coding are done incrementally and interactively, building up each feature until it provides enough value to release to production. Agile testing covers all types of testing. The Agile Testing Quadrants provide a helpful taxonomy to help teams identify and plan the testing needed."
+						}
+					}
+				}
+			</div>
+		</fieldset>
 	</main>
 
 	<aside>

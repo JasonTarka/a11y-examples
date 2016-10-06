@@ -1,7 +1,3 @@
-.hidden {
-	display: none;
-}
-
 .error {
 	background-color: #F99;
 	border-left: 5px solid red;
@@ -10,4 +6,8 @@
 
 .error > span {
 	display: block;
+}
+
+[aria-busy="true"] [data-src] {
+	display: none;
 }
