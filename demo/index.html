@@ -24,7 +24,7 @@
 		</p>
 	</header>
 
-	<section aria-busy="true">
+	<main aria-busy="true">
 		<h2>Customer Information</h2>
 
 		<div class="error hidden"
@@ -39,7 +39,7 @@
 				{"title": "Last Name", "contents": "Smith", "name": "lastName"}
 			</div>
 		</div>
-	</section>
+	</main>
 
 	<aside>
 		Mostly ignore the makeshift element loading system. However, pay attention
@@ -47,9 +47,17 @@
 	</aside>
 
 	<script type="text/javascript">
-		$(() => {
-			const loader = new Loader();
-			loader.loadAll();
+		$(document).ready( function() {
+			if( typeof Promise === 'undefined' ) {
+				$.getScript('./polyfill.min.js')
+						.done(function() {
+							const loader = new Loader();
+							loader.loadAll();
+						});
+			} else {
+				const loader = new Loader();
+				loader.loadAll();
+			}
 		});
 	</script>
 </body>
