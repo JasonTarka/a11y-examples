@@ -2,7 +2,7 @@
 	<!-- What should be visible to a screen reader -->
 	<span class="offscreen">
 		<!-- The only element that can actually be focused -->
-		<button class="begin-edit">Click to edit</button>
+		<button class="begin-edit"></button>
 	</span>
 
 	<!-- Note the aria-hidden -->
@@ -13,7 +13,8 @@
 		<span class="contents"></span>
 	</span>
 
-
+	<!-- The actual input area, initially hidden.
+	 	Using a label with duplicated text to properly label the input. -->
 	<label class="input hidden">
 		<span class="title"></span>
 		<input type="text" />

@@ -9,7 +9,7 @@ const KeyCodes = {
 class ClickToEdit {
 	constructor( node, data ) {
 		this.data = JSON.parse( data );
-		this.node = node;
+		this.title = this.data.title;
 
 		this.contents = this.data.contents;
 
@@ -30,12 +30,13 @@ class ClickToEdit {
 		this.elements.title.text( title );
 
 		this.elements.button
-			.text( `${title}. Activate to edit` )
 			.on( 'keydown', e => this.editButtonKeyDown( e ) )
 			.on( 'keyup', e => this.editButtonKeyUp( e ) )
 			.on( 'click', () => this.editButtonClick() )
 			.on( 'focus', () => this.editButtonFocus() )
 			.on( 'blur', () => this.editButtonBlur() );
+
+		this.updateEditButton();
 
 		this.elements.contents
 			.text( this.data.contents )
@@ -43,6 +44,9 @@ class ClickToEdit {
 
 		this.elements.input
 			.attr( 'name', this.data.name )
+			// Information on what just happened, and how to finish editing.
+			// Will be read out when focusing in the field, before the contents.
+			.attr( 'aria-label', `Editing ${title}. Hit Tab to finish, or Escape to cancel.` )
 			.on( 'keydown', e => this.inputKeyDown( e ) )
 			.on( 'keyup', e => this.inputKeyUp( e ) )
 			.on( 'blur', () => this.inputBlur() );
@@ -56,7 +60,6 @@ class ClickToEdit {
 		this.elements.display.addClass( 'hidden' );
 		this.elements.inputContainer.removeClass( 'hidden' );
 		this.elements.input.focus();
-		// TODO: Announcements/information text
 	}
 
 	cancelEdit() {
@@ -72,7 +75,15 @@ class ClickToEdit {
 		this.elements.contents.text( this.contents );
 		this.elements.display.removeClass( 'hidden' );
 		this.elements.inputContainer.addClass( 'hidden' );
-		// TODO: Announcements
+
+		this.updateEditButton();
+		this.elements.button.focus();
+
+		Announce.announce( 'Done editing' );
+	}
+
+	updateEditButton() {
+		this.elements.button.text( `${this.title}: ${this.contents}. Activate to edit.` );
 	}
 
 	/***** Event handling *****/
@@ -114,7 +125,6 @@ class ClickToEdit {
 	}
 
 	/**
-	 *
 	 * @param {KeyboardEvent} event
 	 */
 	inputKeyDown( event ) {
