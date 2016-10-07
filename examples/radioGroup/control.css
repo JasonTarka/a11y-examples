@@ -5,16 +5,30 @@
 
 .radioGroup label {
 	display: block;
-	border-left: 7px solid #CCC;
+	/*border-left: 7px solid #CCC;*/
+	border-left: none !important;
 	margin: 7px;
-	padding: 3px;
-	padding-left: 5px;
-	border-radius: 5px;
+	padding: 5px 7px;
+
+	border-radius: 0 5px 5px 0;
+	position: relative;
+}
+
+.radioGroup label:before {
+	content: " ";
+	display: block;
+	width: 7px;
+	border: 1px solid #66F;
+	border-radius: 5px 0 0 5px;
+	position: absolute;
+	top: 0;
+	left: -9px;
+	height: calc(100% - 2px);
 }
 
 .radioGroup label:hover,
 .radioGroup label.focused {
-	background-color: #EEF;
+	background-color: #CCF;
 	cursor: pointer;
 }
 
@@ -22,14 +36,19 @@
 	border: 1px solid #66F;
 	border-left-width: 7px;
 
-	padding-top: 2px;
-	padding-bottom: 2px;
+	padding: 4px 6px 4px 7px;
+}
+
+
+.radioGroup label.focused:before {
+	height: 100%;
+	top: -1px;
 }
 
 .radioGroup label:not( .selected ) {
 	border-left-color: #CCC;
 }
 
-.radioGroup label.selected {
-	border-left-color: #66F;
+.radioGroup label.selected:before {
+	background-color: #CCF;
 }

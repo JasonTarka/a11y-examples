@@ -8,7 +8,7 @@ class Announce {
 	static announce( text ) {
 		let container = $( '[aria-live]:first' );
 		if( !container.length ) {
-			container = $( `<span aria-live="polite" aria-atomic="true"></span>` );
+			container = $( `<span aria-live="polite" aria-atomic="true" class="offscreen"></span>` );
 			$('body').append( container );
 		}
 

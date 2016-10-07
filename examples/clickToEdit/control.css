@@ -1,7 +1,7 @@
 /***** Accessibility or Functionality related *****/
 .clickToEdit .contents:hover,
 .clickToEdit .contents.focused {
-	background-color: #EEF;
+	background-color: #CCF;
 	cursor: pointer;
 }
 

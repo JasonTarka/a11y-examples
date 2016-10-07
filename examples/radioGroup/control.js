@@ -18,7 +18,6 @@ class RadioGroup {
 	init() {
 		this.elements.title.text( this.data.title );
 		this.elements.description.text( this.data.description );
-		this.updateSelectionInfo();
 
 		Object.keys( this.data.options )
 			.forEach( value => this.elements.options.append(
@@ -31,6 +30,8 @@ class RadioGroup {
 			.on( 'change', e => this.radioChanged( e ) )
 			.on( 'focus', e => this.radioFocused( e ) )
 			.on( 'blur', e => this.radioBlurred( e ) );
+
+		this.updateSelectionInfo();
 	}
 
 	updateSelectionInfo() {
@@ -79,6 +80,12 @@ class RadioGroup {
 			description = optionData.description,
 			id = `${name}-${value}`;
 
+		let selected = '';
+		if( optionData.selected ) {
+			this.selected = value;
+			selected = 'checked="checked"';
+		}
+
 		return $( `
 			<label id="${id}">
 				<span class="offscreen">
@@ -86,6 +93,7 @@ class RadioGroup {
 						   value="${value}"
 						   name="${name}"
 						   aria-labelledby="${id}-summary"
+						   ${selected}
 						/>
 
 					<!-- Summary title to be used by screenreaders -->

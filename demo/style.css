@@ -11,3 +11,74 @@
 [aria-busy="true"] [data-src] {
 	display: none;
 }
+
+/***** Layout of main elements *****/
+
+body {
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+	align-content: stretch;
+
+	background-color: #FCFCFC;
+	font-family: sans-serif;
+}
+
+body > * {
+	flex: 1 1 auto;
+}
+
+@media all and (min-width: 800px) {
+	body {
+		width: 800px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	header {
+		flex: 1 0 100%;
+	}
+
+	main {
+		flex: 3 1 0;
+	}
+
+	aside {
+		flex: 1 1 0;
+	}
+}
+
+/***** Various styling *****/
+
+body {
+	background-color: #EEE;
+}
+
+header {
+	border-bottom: 3px double black;
+}
+
+main {
+	margin: 10px auto;
+	padding: 10px;
+	background-color: #F6F6F6;
+	border: thin solid #CCC;
+}
+
+aside {
+	margin: 10px;
+	border: thin solid #CCC;
+	padding: 5px;
+
+	background-color: #F6F6F6;
+}
+
+main h2 {
+	margin: 0;
+}
+
+main,
+aside,
+fieldset {
+	border-radius: 10px;
+}
