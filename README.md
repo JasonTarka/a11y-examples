@@ -66,7 +66,7 @@ Alternatively, you can check out the [ECMAScript Compatibility Table][es-table] 
 ### It's All About Context
 
 Context is the most important aspect of a webpage, no matter your perspective.
-What is the page for? What is it for? Where are you?
+What is the page for? How do you use it? Where are you on it?
 Whether you're someone who likes to tab between links and form elements, someone who clicks things with the mouse, or
 someone who uses a screen-reader to navigate a page, context is everything.
 
@@ -264,11 +264,11 @@ $( '.offscreenButton' )
 Your CSS would look like:
 
 ```CSS
-.onscreenButton {
+.offscreenButton {
 	/* CSS to make it appear offscreen */
 }
 
-.onscreenButton:focus {
+.offscreenButton:focus {
 	outline: none;
 }
 
