@@ -15,36 +15,56 @@
 /***** Layout of main elements *****/
 
 body {
-	display: flex;
-	flex-flow: row wrap;
-	align-items: flex-start;
-	align-content: stretch;
-
 	background-color: #FCFCFC;
 	font-family: sans-serif;
+
+	margin-left: auto;
+	margin-right: auto;
 }
 
-body > * {
-	flex: 1 1 auto;
+main,
+aside {
+	display: block;
 }
 
-@media all and (min-width: 800px) {
+@media all and (min-width: 820px) {
 	body {
 		width: 800px;
-		margin-left: auto;
-		margin-right: auto;
 	}
 
 	header {
-		flex: 1 0 100%;
+		width: 100%;
+	}
+
+	/* Wrapper for IE11 to handle flexbox layout correctly */
+	.container {
+		display: flex;
+		flex-flow: row nowrap;
+		align-items: flex-start;
+
+		width: 100%;
+		max-width: 100%;
 	}
 
 	main {
-		flex: 3 1 0;
+		flex: 3;
 	}
 
 	aside {
-		flex: 1 1 0;
+		flex: 1;
+	}
+}
+
+@media screen and (max-width: 820px) {
+	body {
+		width: 90%;
+	}
+
+	.container {
+		display: flex;
+		flex-flow: column-reverse;
+		align-items: stretch;
+		width: 100%;
 	}
 }
 

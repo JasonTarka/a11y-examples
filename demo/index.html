@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Accessible Control Demo</title>
 
 	<link rel="stylesheet" href="style.css" />
@@ -25,87 +26,89 @@
 		</p>
 	</header>
 
-	<main aria-busy="true">
-		<h2>Customer Information</h2>
+	<div class="container">
+		<main aria-busy="true">
+			<h2>Customer Information</h2>
 
-		<p>
-			An example of a form using various elements.
-			it is themed around editing the information for a customer in an
-			imaginary database.
-		</p>
+			<p>
+				An example of a form using various elements.
+				it is themed around editing the information for a customer in an
+				imaginary database.
+			</p>
 
-		<div class="error hidden"
-			 role="alert"
-		></div>
+			<div class="error hidden"
+				 role="alert"
+			></div>
 
-		<form>
-			<fieldset>
-				<legend><h3>John Smith</h3></legend>
+			<form>
+				<fieldset>
+					<legend><h3>John Smith</h3></legend>
 
-				<div data-src="clickToEdit">
-					{"title": "First Name", "contents": "John", "name": "firstName"}
-				</div>
-				<div data-src="clickToEdit">
-					{"title": "Last Name", "contents": "Smith", "name": "lastName"}
-				</div>
+					<div data-src="clickToEdit">
+						{"title": "First Name", "contents": "John", "name": "firstName"}
+					</div>
+					<div data-src="clickToEdit">
+						{"title": "Last Name", "contents": "Smith", "name": "lastName"}
+					</div>
 
-				<div data-src="radioGroup">
-					{
-						"name": "customerType",
-						"title": "Customer Type",
-						"description": "In sales, commerce and economics, a customer (sometimes known as a client, buyer, or purchaser) is the recipient of a good, service, product or an idea.",
-						"options": {
-							"sales": {
-								"summary": "Sales Person",
-								"description": "The primary function of professional salespeople is to generate and close business resulting in revenue."
-							},
-							"developer": {
-								"summary": "Software Developer",
-								"description": "A software developer is a person concerned with facets of the software development process."
-							},
-							"tester": {
-								"summary": "Quality Assurance Tester",
-								"description": "Agile development recognizes that testing is not a separate phase, but an integral part of software development",
-								"selected": true
+					<div data-src="radioGroup">
+						{
+							"name": "customerType",
+							"title": "Customer Type",
+							"description": "In sales, commerce and economics, a customer (sometimes known as a client, buyer, or purchaser) is the recipient of a good, service, product or an idea.",
+							"options": {
+								"sales": {
+									"summary": "Sales Person",
+									"description": "The primary function of professional salespeople is to generate and close business resulting in revenue."
+								},
+								"developer": {
+									"summary": "Software Developer",
+									"description": "A software developer is a person concerned with facets of the software development process."
+								},
+								"tester": {
+									"summary": "Quality Assurance Tester",
+									"description": "Agile development recognizes that testing is not a separate phase, but an integral part of software development",
+									"selected": true
+								}
 							}
 						}
-					}
-				</div>
-			</fieldset>
-			<fieldset>
-				<legend><h3>Corporate Account</h3></legend>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend><h3>Corporate Account</h3></legend>
 
-				<div data-src="clickToEdit">
-					{"title": "Account Name", "contents": "Corporate", "name": "accountName"}
-				</div>
+					<div data-src="clickToEdit">
+						{"title": "Account Name", "contents": "Corporate", "name": "accountName"}
+					</div>
 
-				<!-- TODO: Insert a slider control -->
+					<!-- TODO: Insert a slider control -->
 
-				<div data-src="radioGroup">
-					{
-						"name": "discountType",
-						"title": "Discount Type",
-						"description": "The type of discount that this corporate account will receive.",
-						"options": {
-							"sales": {
-								"summary": "Total price",
-								"description": "A straight discount, regardless of how much they order."
-							},
-							"developer": {
-								"summary": "Discount per number of units",
-								"description": "A discount applied after a certain number of units has been ordered."
+					<div data-src="radioGroup">
+						{
+							"name": "discountType",
+							"title": "Discount Type",
+							"description": "The type of discount that this corporate account will receive.",
+							"options": {
+								"sales": {
+									"summary": "Total price",
+									"description": "A straight discount, regardless of how much they order."
+								},
+								"developer": {
+									"summary": "Discount per number of units",
+									"description": "A discount applied after a certain number of units has been ordered."
+								}
 							}
 						}
-					}
-				</div>
-			</fieldset>
-		</form>
-	</main>
+					</div>
+				</fieldset>
+			</form>
+		</main>
 
-	<aside>
-		Mostly ignore the makeshift element loading system. However, pay attention
-		to the <code>aria-busy</code> attribute
-	</aside>
+		<aside>
+			Mostly ignore the makeshift element loading system. However, pay attention
+			to the <code>aria-busy</code> attribute
+		</aside>
+	</div>
 
 	<script type="text/javascript">
 		$(document).ready( function() {
