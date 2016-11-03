@@ -9,7 +9,10 @@
     "build:static": "copyfiles ./demo/**/* ./examples/**/* ./dist && npm run build:polyfill",
     "build:polyfill": "copyfiles -f ./node_modules/babel-polyfill/dist/polyfill.min.js dist/demo",
     "start": "node index.js",
-    "start:old-browser": "npm run build && cd dist && node index.js"
+    "start:old-browser": "npm run build && cd dist && node index.js",
+    "watch": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\"",
+    "watch:static": "onchange \"demo/**/*\" \"examples/**/*\" -e \"./**/*.js\" -- npm run build:static",
+    "watch:js": "onchange \"demo/**/*.js\" \"examples/**/*.js\" -- npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -38,7 +41,9 @@
     "babel-cli": "^6.16.0",
     "babel-polyfill": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
-    "copyfiles": "^1.0.0"
+    "copyfiles": "^1.0.0",
+    "onchange": "^3.0.2",
+    "parallelshell": "^2.0.0"
   },
   "babel": {
     "presets": [

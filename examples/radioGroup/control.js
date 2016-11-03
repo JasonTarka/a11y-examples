@@ -16,7 +16,12 @@ class RadioGroup {
 	}
 
 	init() {
-		this.elements.title.text( this.data.title );
+		const titleId = `${this.data.name}-title`;
+
+		this.elements.title
+			.text( this.data.title )
+			.attr( 'id', titleId );
+		this.elements.options.attr( 'aria-labelledby', titleId );
 		this.elements.description.text( this.data.description );
 
 		Object.keys( this.data.options )
@@ -24,8 +29,6 @@ class RadioGroup {
 				this.constructOptionNode( value, this.data.options[value] )
 			) );
 
-		console.log( this.elements.options.children( 'input' ) );
-		console.log( this.elements.options );
 		this.elements.options.find( 'input:radio' )
 			.on( 'change', e => this.radioChanged( e ) )
 			.on( 'focus', e => this.radioFocused( e ) )
@@ -89,23 +92,17 @@ class RadioGroup {
 		return $( `
 			<label id="${id}">
 				<span class="offscreen">
+					<!-- Using aria-label to give the radio a shorter name --> 
 					<input type="radio"
 						   value="${value}"
 						   name="${name}"
-						   aria-labelledby="${id}-summary"
+						   aria-label="${summary}"
 						   ${selected}
 						/>
-
-					<!-- Summary title to be used by screenreaders -->
-					<span id="${id}-summary">
-						${title} ${summary}
-					</span>
 				</span>
 
-				<!-- Visual summary, hidden to screenreaders to no repeat information -->
-				<div class="summary"
-					 aria-hidden="true"
-				>
+				<!-- Hidden from screen readers to not repeat information -->
+				<div class="summary">
 					${summary}
 				</div>
 				<div class="description">

@@ -1,13 +1,16 @@
-<div role="radiogroup"
-	 class="radioGroup"
->
-	<h4 class="title"></h4>
+<div class="radioGroup">
+	<h4 class="title"
+		id="-title"
+	></h4>
 	<span class="offscreen selection-info">
 		<!-- Text about which option is selected goes here -->
 	</span>
 	<div class="description"></div>
 
-	<div class="options">
+	<div class="options"
+		 role="radiogroup"
+		 aria-labelledby="-title"
+	>
 		<!-- Radio buttons & labels will be put in here -->
 	</div>
 </div>
