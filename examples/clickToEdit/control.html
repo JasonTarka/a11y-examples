@@ -1,8 +1,13 @@
 <div class="clickToEdit">
 	<!-- What should be visible to a screen reader -->
 	<span class="offscreen">
-		<!-- The only element that can actually be focused -->
-		<button class="begin-edit"></button>
+		<!--
+			The only element that can actually be focused.
+			Setting type="button" to stop it from being a submit button
+		-->
+		<button class="begin-edit"
+				type="button"
+		></button>
 	</span>
 
 	<!-- Note the aria-hidden -->

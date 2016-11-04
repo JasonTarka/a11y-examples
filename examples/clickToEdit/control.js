@@ -31,7 +31,6 @@ class ClickToEdit {
 
 		this.elements.button
 			.on( 'keydown', e => this.editButtonKeyDown( e ) )
-			.on( 'keyup', e => this.editButtonKeyUp( e ) )
 			.on( 'click', () => this.editButtonClick() )
 			.on( 'focus', () => this.editButtonFocus() )
 			.on( 'blur', () => this.editButtonBlur() );
@@ -107,13 +106,6 @@ class ClickToEdit {
 			// field if the user hits Enter to activate the edit.
 			this.editButtonClicked = true;
 		}
-	}
-
-	editButtonKeyUp( event ) {
-		// TODO: FIgure out how I've done this before
-		// Prevent the default action in case the user hits Enter, which
-		// may attempt to submit the form
-		// event.preventDefault();
 	}
 
 	editButtonClick() {
