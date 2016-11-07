@@ -11,7 +11,7 @@
     "start": "node index.js",
     "start:old-browser": "npm run build && cd dist && node index.js",
     "watch": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\"",
-    "watch:static": "onchange \"demo/**/*\" \"examples/**/*\" -e \"./**/*.js\" -- npm run build:static",
+    "watch:static": "onchange \"demo/**/*\" \"examples/**/*\" -e \"./**/*.js\" -- npm run build",
     "watch:js": "onchange \"demo/**/*.js\" \"examples/**/*.js\" -- npm run build:js"
   },
   "repository": {
