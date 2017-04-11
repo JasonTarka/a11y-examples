@@ -26,7 +26,7 @@ continuing to read this README.
 
 ## Code Examples
 
-The example controls can be found under `examples/`, each in their own folder.
+The example controls can be found under `controls/`, each in their own folder.
 The index page that uses them is in `demo/`.
 They're written in ES6 to make the code cleaner and easier to read, but the same approaches can be applied in regular
 JavaScript/ES5.

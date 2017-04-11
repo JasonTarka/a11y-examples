@@ -40,7 +40,7 @@ class Loader {
 				resolve();
 			} else {
 				this._loading.add( name );
-				$.getScript( `/examples/${name}/control.js` )
+				$.getScript( `/controls/${name}/control.js` )
 					.done( () => resolve() )
 					.fail( ( jqxhr, settings, exception ) => reject( exception ) );
 			}
@@ -50,7 +50,7 @@ class Loader {
 	loadCss( name ) {
 		if( !this._loaded.has( name ) ) {
 			$( 'body' ).append( $(
-				`<link rel="stylesheet" href="/examples/${name}/control.css" />`
+				`<link rel="stylesheet" href="/controls/${name}/control.css" />`
 			) );
 		}
 	}
@@ -58,7 +58,7 @@ class Loader {
 	loadHtml( name, node ) {
 		return new Promise( ( resolve, reject ) =>
 			$.ajax( {
-				url: `/examples/${name}/control.html`,
+				url: `/controls/${name}/control.html`,
 				success: data => {
 					$( node ).html( data );
 					resolve();

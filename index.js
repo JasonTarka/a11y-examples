@@ -8,7 +8,7 @@ const port = process.env.NODE_PORT || 3000,
 const app = express();
 
 app.use( express.static( 'demo' ) );
-app.use( '/examples', express.static( 'examples' ) );
+app.use( '/controls', express.static( 'controls' ) );
 
 app.listen( port, () => {
 	console.log( `Demo listening on http://${host}:${port}` );
