@@ -35,14 +35,14 @@
   },
   "homepage": "https://github.com/JasonTarka/a11y-examples#readme",
   "dependencies": {
-    "express": "^4.14.0"
+    "express": "^4.15.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.16.0",
-    "babel-polyfill": "^6.16.0",
-    "babel-preset-latest": "^6.16.0",
-    "copyfiles": "^1.0.0",
-    "onchange": "^3.0.2",
+    "babel-cli": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-latest": "^6.24.1",
+    "copyfiles": "^1.2.0",
+    "onchange": "^3.2.1",
     "parallelshell": "^2.0.0"
   },
   "babel": {
