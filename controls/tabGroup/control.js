@@ -17,9 +17,11 @@ const TabKeyCodes = {
 };
 
 class TabGroup {
+
 	constructor( node, data ) {
 		/** @type {Array<TabData>} */
 		this.data = JSON.parse( data );
+		this.loader = Loader.Instance;
 
 		this.elements = {
 			tabList: $( '.tabList', node ),
@@ -46,18 +48,18 @@ class TabGroup {
 			let prev = i > 0 ? this.data[i - 1].name : null,
 				next = i < this.data.length - 1 ? this.data[i + 1].name : null;
 
-			console.log( this.data[i].name, prev, next );
-
 			tabList.push(
 				this._constructTab( this.data[i], prev, next )
 			);
 			tabPanels.push(
-				this._constructTabPanel( this.data[i] )
+				TabGroup._constructTabPanel( this.data[i] )
 			);
 		}
 
 		this.elements.tabList.append( tabList );
 		this.elements.container.append( tabPanels );
+
+		tabPanels.forEach( x => this._initializeTab( x ) );
 	}
 
 	_constructTab( data, prev, next ) {
@@ -77,8 +79,9 @@ class TabGroup {
 			).on( 'keydown', e => this._keyDown( e, prev, next ) );
 	}
 
-	_constructTabPanel( data ) {
+	static _constructTabPanel( data ) {
 		const name = data.name,
+			contentLocation = data.contents,
 			isSelected = data.selected,
 			cssClass = isSelected ? 'selected' : '';
 
@@ -87,13 +90,14 @@ class TabGroup {
 				 role="tabpanel"
 				 class="${cssClass}"
 				 aria-labelledby="${name}-tab"
+				 aria-busy="true"
+				 data-content-location="${contentLocation}"
 			>
 				${data.title}
 			</div>` );
 	}
 
 	_activateTab( name ) {
-		console.log( 'Activate tab:', name );
 		if( !name ) return;
 
 		const oldTab = this.elements.tabList.children( '[aria-selected="true"]' ),
@@ -113,6 +117,20 @@ class TabGroup {
 			.focus();
 	}
 
+	/**
+	 * @param {jQuery} node
+	 * @private
+	 */
+	_initializeTab( node ) {
+		let location = node.attr( 'data-content-location' );
+		node.removeAttr( 'data-content-location' );
+
+		return this.loader.loadHtml( null, node, location )
+			.then( () => this.loader.loadAll( node ) )
+			.then( () => node.removeAttr( 'aria-busy' ) )
+			.catch( err => Loader.logError( err, location ) );
+	}
+
 	/***** Event Handlers *****/
 
 	/**
@@ -122,8 +140,6 @@ class TabGroup {
 	 * @private
 	 */
 	_keyDown( event, prev, next ) {
-		console.log( 'Keydown event: ', event.which );
-
 		switch( event.which ) {
 			case TabKeyCodes.Home:
 				this._activateTab( this.firstTab );

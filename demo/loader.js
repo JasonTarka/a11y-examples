@@ -1,16 +1,29 @@
 'use strict';
 
 class Loader {
+
 	constructor() {
+		if( Loader.Instance != null )
+			return Loader.Instance;
+
 		this._loaded = new Set();
 		this._loading = new Set();
+
+		/** @type {Loader} */
+		Loader.Instance = this;
 	}
 
-	loadAll() {
+	loadAll( node ) {
+		node = node || $( 'html' );
 		let self = this;
-		$( '[data-src]' ).each( function() {
-			self.loadElement( $( this ) );
+
+		// Have to use `function()` as the node becomes `this`
+		let promises = $( '[data-src]', node ).map( function() {
+			return self.loadElement( $( this ) );
 		} );
+
+		Promise.all( promises )
+			.then( () => $( 'main[aria-busy]' ).attr( 'aria-busy', 'false' ) );
 	}
 
 	loadElement( node ) {
@@ -18,20 +31,12 @@ class Loader {
 			className = name[0].toUpperCase() + name.substr( 1 ),
 			data = node.text().trim();
 
-		this.loadScript( name )
+		return this.loadScript( name )
 			.then( () => this.loadCss( name ) )
 			.then( () => this._loaded.add( name ) )
 			.then( () => this.loadHtml( name, node ) )
 			.then( () => new window[className]( node, data ) )
-			.then( () => $( 'main[aria-busy]' ).attr( 'aria-busy', 'false' ) )
-			.catch( error );
-
-		function error( err ) {
-			console.error( `Error occurred loading ${name}: `, err )
-			$( '.error:first' )
-				.removeClass( 'hidden' )
-				.append( `<span>Error occurred loading ${name}</span>` )
-		}
+			.catch( err => Loader.logError( err, name ) );
 	}
 
 	loadScript( name ) {
@@ -55,10 +60,12 @@ class Loader {
 		}
 	}
 
-	loadHtml( name, node ) {
+	loadHtml( name, node, location ) {
+		location = location || `/controls/${name}/control.html`;
+
 		return new Promise( ( resolve, reject ) =>
 			$.ajax( {
-				url: `/controls/${name}/control.html`,
+				url: location,
 				success: data => {
 					$( node ).html( data );
 					resolve();
@@ -66,5 +73,12 @@ class Loader {
 				error: ( jqxhr, textStatus, error ) => reject( error )
 			} )
 		);
+	}
+
+	static logError( err, name ) {
+		console.error( `Error occurred loading "${name}": `, err );
+		$( '.error:first' )
+			.removeClass( 'hidden' )
+			.append( `<span>Error occurred loading "${name}"</span>` )
 	}
 }
