@@ -23,7 +23,8 @@ body {
 }
 
 main,
-aside {
+aside,
+.error {
 	display: block;
 }
 

@@ -76,7 +76,8 @@ class TabGroup {
 				>
 					${title}
 				</span>`
-			).on( 'keydown', e => this._keyDown( e, prev, next ) );
+			).on( 'keydown', event => this._keyDown( event, prev, next ) )
+			.on( 'click', event => this._activateTab( name ) );
 	}
 
 	static _constructTabPanel( data ) {

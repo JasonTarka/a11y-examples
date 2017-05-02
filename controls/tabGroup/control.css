@@ -9,10 +9,12 @@
 	border-bottom: none;
 	padding: 5px;
 	display: inline-block;
-	margin: 0 5px;
+	margin: 0 4px 0 8px;
 	position: relative;
 	box-sizing: border-box;
 	border-top-right-radius: 5px;
+
+	cursor: pointer;
 }
 
 .tabList > [role='tab']:before {
@@ -27,9 +29,10 @@
 
 	position: absolute;
 	top: -1px;
-	left: -5px;
+	left: -8px;
 }
 
+.tabList > [role='tab']:hover,
 .tabList > [role='tab'][aria-selected="true"]:before,
 .tabList > [role='tab']:focus {
 	background-color: #CCF;
@@ -37,7 +40,7 @@
 
 .tabList > [role='tab']:focus {
 	border-width: 2px 2px 0 0;
-	margin: -1px 4px -1px 5px;
+	margin: -1px 3px -1px 8px;
 	outline: none;
 }
 
