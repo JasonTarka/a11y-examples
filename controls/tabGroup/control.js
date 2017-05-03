@@ -83,13 +83,12 @@ class TabGroup {
 	static _constructTabPanel( data ) {
 		const name = data.name,
 			contentLocation = data.contents,
-			isSelected = data.selected,
-			cssClass = isSelected ? 'selected' : '';
+			isSelected = data.selected;
 
 		return $( `
 			<div id="${name}"
 				 role="tabpanel"
-				 class="${cssClass}"
+				 aria-expanded="${isSelected}"
 				 aria-labelledby="${name}-tab"
 				 aria-busy="true"
 				 data-content-location="${contentLocation}"
@@ -102,7 +101,7 @@ class TabGroup {
 		if( !name ) return;
 
 		const oldTab = this.elements.tabList.children( '[aria-selected="true"]' ),
-			oldPanel = this.elements.container.children( '.selected' ),
+			oldPanel = this.elements.container.children( '[aria-expanded="true"]' ),
 			newTab = this.elements.tabList.children( `#${name}-tab` ),
 			newPanel = this.elements.container.children( `#${name}` );
 
