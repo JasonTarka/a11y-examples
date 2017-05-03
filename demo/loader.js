@@ -7,7 +7,8 @@ class Loader {
 			return Loader.Instance;
 
 		this._loaded = new Set();
-		this._loading = new Set();
+		this._loading = new Map();
+		this._loadedCss = new Set();
 
 		/** @type {Loader} */
 		Loader.Instance = this;
@@ -15,12 +16,10 @@ class Loader {
 
 	loadAll( node ) {
 		node = node || $( 'html' );
-		let self = this;
 
-		// Have to use `function()` as the node becomes `this`
-		let promises = $( '[data-src]', node ).map( function() {
-			return self.loadElement( $( this ) );
-		} );
+		let promises = $( '[data-src]', node ).toArray().map(
+			element => this.loadElement( $( element ) )
+		);
 
 		Promise.all( promises )
 			.then( () => $( 'main[aria-busy]' ).attr( 'aria-busy', 'false' ) );
@@ -41,19 +40,39 @@ class Loader {
 
 	loadScript( name ) {
 		return new Promise( ( resolve, reject ) => {
-			if( this._loaded.has( name ) || this._loading.has( name ) ) {
-				resolve();
-			} else {
-				this._loading.add( name );
-				$.getScript( `/controls/${name}/control.js` )
-					.done( () => resolve() )
-					.fail( ( jqxhr, settings, exception ) => reject( exception ) );
+			if( this._loaded.has( name ) ) {
+				// Already loaded, nothing to do
+				return resolve();
 			}
+			if( this._loading.has( name ) ) {
+				// Return the existing promise
+				return this._loading.get( name )
+				           .then( resolve )
+				           .catch( reject );
+			}
+
+			let promise = new Promise(
+				( subResolve, subReject ) => {
+					let script = document.createElement( 'script' );
+					script.onload = () => {
+						this._loaded.add( name );
+						this._loading.delete( name );
+						subResolve();
+					};
+					script.onerror = subReject;
+
+					document.head.appendChild( script );
+					script.src = `/controls/${name}/control.js`;
+				} )
+				.then( resolve )
+				.catch( reject );
+
+			this._loading.set( name, promise );
 		} );
 	}
 
 	loadCss( name ) {
-		if( !this._loaded.has( name ) ) {
+		if( !this._loadedCss.has( name ) ) {
 			$( 'body' ).append( $(
 				`<link rel="stylesheet" href="/controls/${name}/control.css" />`
 			) );
