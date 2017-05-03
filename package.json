@@ -4,15 +4,18 @@
   "description": "A set of examples of interactive web controls designed to demonstrate accessibility patterns.",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build:static && npm run build:js",
+    "build": "npm run build:less && npm run build:static && npm run build:js",
+    "build:less": "foreach --no-c -g \"controls/**/*.less\" -x \"lessc {{dir}}/{{name}}.less {{dir}}/{{name}}.css\"",
     "build:js": "babel index.js demo/**/*.js controls/**/*.js --out-dir dist",
     "build:static": "copyfiles ./demo/**/* ./controls/**/* ./dist && npm run build:polyfill",
     "build:polyfill": "copyfiles -f ./node_modules/babel-polyfill/dist/polyfill.min.js dist/demo",
     "start": "node index.js",
     "start:old-browser": "npm run build && cd dist && node index.js",
-    "watch": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\"",
+    "watch": "parallelshell \"npm run start\" \"npm run build:less\" \"npm run watch:less\"",
     "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -- npm run build",
-    "watch:js": "onchange \"demo/**/*.js\" \"controls/**/*.js\" -- npm run build:js"
+    "watch:js": "onchange \"demo/**/*.js\" \"controls/**/*.js\" -- npm run build:js",
+    "watch:less": "onchange \"**/*.less\" -- npm run build:less",
+    "watch:old-browser": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\" \"npm run watch:less\""
   },
   "repository": {
     "type": "git",
@@ -41,7 +44,10 @@
     "babel-cli": "^6.24.1",
     "babel-polyfill": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
+    "coffee-script": "^1.12.5",
     "copyfiles": "^1.2.0",
+    "foreach-cli": "^1.7.1",
+    "less": "^2.7.2",
     "onchange": "^3.2.1",
     "parallelshell": "^2.0.0"
   },
