@@ -1,54 +1,63 @@
-.radioGroup label .summary {
-	display: block;
-	font-weight: bold;
-}
+@import '../_common';
 
 .radioGroup label {
-	display: block;
-	/*border-left: 7px solid #CCC;*/
-	border-left: none !important;
-	margin: 7px;
-	padding: 5px 7px;
+	@border-width: 1px;
+	@select-width: 7px;
+	@padding: 5px;
 
-	border-radius: 0 5px 5px 0;
-	position: relative;
-}
+	& {
+		display: block;
+		border-left: none !important;
+		margin: @padding;
+		margin-left: @select-width;
+		padding: @padding;
+		padding-left: @select-width;
 
-.radioGroup label:before {
-	content: " ";
-	display: block;
-	width: 7px;
-	border: 1px solid #66F;
-	border-radius: 5px 0 0 5px;
-	position: absolute;
-	top: 0;
-	left: -9px;
-	height: calc(100% - 2px);
-}
+		border-radius: 0 @padding @padding 0;
+		position: relative;
+	}
 
-.radioGroup label:hover,
-.radioGroup label.focused {
-	background-color: #CCF;
-	cursor: pointer;
-}
+	.summary {
+		display: block;
+		font-weight: bold;
+	}
 
-.radioGroup label.focused {
-	border: 1px solid #66F;
-	border-left-width: 7px;
+	&:before {
+		content: "";
+		display: block;
+		width: @select-width;
+		border: @border-width solid @select-border-colour;
+		border-radius: @padding 0 0 @padding;
+		position: absolute;
+		top: 0;
+		left: -(@select-width + @border-width * 2);
+		height: calc( ~'100% - ' @border-width * 2 );
+	}
 
-	padding: 4px 6px 4px 7px;
-}
+	&:hover,
+	&.focused {
+		background-color: @select-background-colour;
+		cursor: pointer;
+	}
 
+	&.focused {
+		border: @border-width solid @select-border-colour;
+		border-left-width: @select-width;
 
-.radioGroup label.focused:before {
-	height: 100%;
-	top: -1px;
-}
+		padding: @padding - @border-width;
+		padding-left: @select-width;
+	}
 
-.radioGroup label:not( .selected ) {
-	border-left-color: #CCC;
-}
+	&.focused:before {
+		height: 100%;
+		top: -@border-width;
+	}
 
-.radioGroup label.selected:before {
-	background-color: #CCF;
+	&:not( .selected ) {
+		border-left-color: @select-border-colour;
+	}
+
+	&.selected:before {
+		background-color: @select-background-colour;
+	}
 }

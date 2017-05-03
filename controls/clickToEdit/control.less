@@ -1,45 +1,54 @@
+@import '../_common';
+
 /***** Accessibility or Functionality related *****/
-.clickToEdit .contents:hover,
-.clickToEdit .contents.focused {
-	background-color: #CCF;
-	cursor: pointer;
+.clickToEdit {
+	.contents:hover,
+	.contents.focused {
+		background-color: @select-background-colour;
+		cursor: pointer;
+	}
+
+	.contents.focused {
+		border: thin solid @select-border-colour;
+	}
 }
 
-.clickToEdit .contents.focused {
-	border: thin solid #66F;
-}
+	/***** Pure visual styling *****/
 
-/***** Pure visual styling *****/
+.clickToEdit {
+	@padding: 5px;
+	@border-width: 1px;
 
-.clickToEdit,
-.clickToEdit input {
-	font-family: sans-serif;
-	font-size: 1rem;
-}
+	&,
+	& input {
+		font-family: sans-serif;
+		font-size: 1rem;
+	}
 
-.clickToEdit .display,
-.clickToEdit .input {
-	padding: 5px;
-}
+	.display,
+	.input {
+		padding: @padding;
+	}
 
-.clickToEdit .title {
-	display: inline-block;
-	font-weight: 600;
-	width: 100px;
-}
+	.title {
+		display: inline-block;
+		font-weight: 600;
+		width: 100px;
+	}
 
-.clickToEdit .contents {
-	display: inline-block;
-	padding: 5px;
-	border-radius: 5px;
-}
+	.contents {
+		display: inline-block;
+		padding: @padding;
+		border-radius: @padding;
+	}
 
-.clickToEdit .contents.focused {
-	padding: 4px;
-}
+	.contents.focused {
+		padding: @padding - @border-width;
+	}
 
-.clickToEdit input {
-	border: thin solid #66F;
-	border-radius: 5px;
-	padding: 4px;
+	input {
+		border: @border-width solid @select-border-colour;
+		border-radius: @padding;
+		padding: @padding - @border-width;
+	}
 }
