@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Embedded Frame</title>
+	<style type="text/css">
+		label {
+			display: block;
+		}
+
+		fieldset li {
+			list-style: none;
+		}
+
+		button {
+			display: block;
+			margin-top: 10px;
+			margin-bottom: 10px;
+		}
+	</style>
+	<script>
+		function addElement() {
+			let button = document.createElement( 'button' );
+			button.textContent = 'Remove Me';
+			button.onclick = removeElement;
+
+			document.body.appendChild( button );
+		}
+
+		function removeElement() {
+			this.parentElement.removeChild( this );
+		}
+	</script>
+</head>
+<body>
+	<p>
+		This is a frame embedded within a tab, loaded via <code>&lt;iframe&gt;</code>
+	</p>
+	<p>
+		It has some form elements, but they are not handled through the control framework.
+	</p>
+	<form>
+		<label>
+			Enter your name:
+			<input type="text"
+			       name="name"
+		       />
+		</label>
+		<fieldset>
+			<legend>What is your favourite colour?</legend>
+			<ul>
+				<li>
+					<label>
+						<input type="radio" name="colour" value="red" />
+						Red
+					</label>
+				</li>
+				<li>
+					<label>
+						<input type="radio" name="colour" value="green" />
+						Green
+					</label>
+				</li>
+				<li>
+					<label>
+						<input type="radio" name="colour" value="blue" />
+						Blue
+					</label>
+				</li>
+			</ul>
+		</fieldset>
+	</form>
+	<p>
+		Some fun with adding elements, to test page resize
+	</p>
+	<p>
+		<button onclick="addElement()">Add Element</button>
+	</p>
+</body>
+</html>

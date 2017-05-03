@@ -6,6 +6,7 @@
  * @property {string} name - HTML ID for the Tab & its Tab panel
  * @property {string} title - Text to display for the Tab
  * @property {string} contents - Path to HTML file containing the Tab's contents
+ * @property {string} src - Path to point a frame at
  * @property {bool} selected - Whether this Tab is the selected Tab or not
  */
 
@@ -45,21 +46,25 @@ class TabGroup {
 		let tabList = [],
 			tabPanels = [];
 		for( let i = 0; i < this.data.length; i++ ) {
-			let prev = i > 0 ? this.data[i - 1].name : null,
+			let data = this.data[i],
+				prev = i > 0 ? this.data[i - 1].name : null,
 				next = i < this.data.length - 1 ? this.data[i + 1].name : null;
 
 			tabList.push(
-				this._constructTab( this.data[i], prev, next )
+				this._constructTab( data, prev, next )
 			);
-			tabPanels.push(
-				TabGroup._constructTabPanel( this.data[i] )
-			);
+			let panel;
+			if( !data.src ) {
+				panel = TabGroup._constructTabPanel( data );
+				this._initializeTab( panel );
+			} else {
+				panel = this._constructFrameTabPanel( data );
+			}
+			tabPanels.push( panel );
 		}
 
 		this.elements.tabList.append( tabList );
 		this.elements.container.append( tabPanels );
-
-		tabPanels.forEach( x => this._initializeTab( x ) );
 	}
 
 	_constructTab( data, prev, next ) {
@@ -97,6 +102,76 @@ class TabGroup {
 			</div>` );
 	}
 
+	_constructFrameTabPanel( data ) {
+		const name = data.name,
+			src = data.src,
+			isSelected = data.selected;
+
+		let panel = $( `
+				<iframe id="${name}"
+						role="tabpanel"
+						src="${src}"
+						aria-expanded="${isSelected}"
+						aria-labelledby="${name}-tab"
+						aria-busy="true"
+				></iframe>`
+			).on( 'load', () => panel.removeAttr( 'aria-busy' ) );
+
+		if( this._getHost( src ) === document.location.host ) {
+			panel.on( 'load', () => this._addResizeHandler( panel ) );
+		}
+
+		return panel;
+	}
+
+	_addResizeHandler( panel ) {
+		let frameDocument = panel[0].contentDocument;
+
+		let observer = new MutationObserver( () => TabGroup._frameResize( panel ) );
+		observer.observe(
+			frameDocument,
+			{
+				childList: true,
+				attributes: true,
+				characterData: true,
+				subtree: true
+			}
+		);
+
+		TabGroup._frameResize( panel );
+	}
+
+	_getHost( url ) {
+		let a = this._a;
+		if( !a ) {
+			a = this._a = document.createElement( 'a' );
+		}
+
+		a.href = url;
+		try {
+			return new URL( a.href ).host;
+		} catch(e) { // IE11 doesn't support the URL object
+			// Pre-assigned href was relative, so a.host will be undefined, but a.href will include the hostname in the
+			// string. Assigning it back to itself lets a.host have a value.
+			a.href = a.href.toString();
+			return a.host;
+		}
+	}
+
+	/**
+	 * @param {jQuery} node
+	 * @private
+	 */
+	_initializeTab( node ) {
+		let location = node.attr( 'data-content-location' );
+		node.removeAttr( 'data-content-location' );
+
+		return this.loader.loadHtml( null, node, location )
+			.then( () => this.loader.loadAll( node ) )
+			.then( () => node.removeAttr( 'aria-busy' ) )
+			.catch( err => Loader.logError( err, location ) );
+	}
+
 	_activateTab( name ) {
 		if( !name ) return;
 
@@ -115,20 +190,6 @@ class TabGroup {
 		newTab.attr( 'aria-selected', true )
 			.attr( 'tabindex', 0 )
 			.focus();
-	}
-
-	/**
-	 * @param {jQuery} node
-	 * @private
-	 */
-	_initializeTab( node ) {
-		let location = node.attr( 'data-content-location' );
-		node.removeAttr( 'data-content-location' );
-
-		return this.loader.loadHtml( null, node, location )
-			.then( () => this.loader.loadAll( node ) )
-			.then( () => node.removeAttr( 'aria-busy' ) )
-			.catch( err => Loader.logError( err, location ) );
 	}
 
 	/***** Event Handlers *****/
@@ -159,6 +220,16 @@ class TabGroup {
 
 		event.preventDefault();
 		return false;
+	}
+
+	/**
+	 * @param {jQuery} panel
+	 * @private
+	 */
+	static _frameResize( panel ) {
+		let body = panel[0].contentDocument.documentElement,
+			height = body.offsetHeight;
+		panel.height( height );
 	}
 }
 
