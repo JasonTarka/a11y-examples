@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build:less && npm run build:static && npm run build:js",
-    "build:less": "foreach --no-c -g \"controls/**/*.less\" -x \"lessc {{dir}}/{{name}}.less {{dir}}/{{name}}.css\"",
+    "build:less": "foreach --no-c -g \"{demo,controls}/**/*.less\" -x \"lessc {{dir}}/{{name}}.less {{dir}}/{{name}}.css\"",
     "build:js": "babel index.js demo/**/*.js controls/**/*.js --out-dir dist",
     "build:static": "copyfiles ./demo/**/* ./controls/**/* ./dist && npm run build:polyfill",
     "build:polyfill": "copyfiles -f ./node_modules/babel-polyfill/dist/polyfill.min.js dist/demo",
@@ -14,7 +14,7 @@
     "watch": "parallelshell \"npm run start\" \"npm run watch:less\"",
     "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -e \"./controls/**/*.css\" -- npm run build",
     "watch:js": "onchange \"demo/**/*.js\" \"controls/**/*.js\" -- npm run build:js",
-    "watch:less": "onchange \"controls/**/*.less\" -- npm run build:less",
+    "watch:less": "onchange \"controls/**/*.less\" \"demo/**/*.less\" -- npm run build:less",
     "watch:old-browser": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\""
   },
   "repository": {

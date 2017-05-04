@@ -1,5 +1,7 @@
+// Accessibility or functionality
+
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .offscreen {
@@ -10,4 +12,31 @@
 	height: 1px;
 	overflow: hidden;
 	white-space: nowrap; /* My own addition. Solves issues with NVDA and VoiceOver. */
+}
+
+.error {
+	& {
+		display: block;
+		background-color: #F99;
+		border-left: 5px solid red;
+		padding: 5px;
+	}
+
+	& > span {
+		display: block;
+	}
+}
+
+[aria-busy="true"] [data-src] {
+	display: none;
+}
+
+// Styling
+
+body {
+	font-family: sans-serif;
+}
+
+.main() {
+	background-color: @main-background-colour;
 }

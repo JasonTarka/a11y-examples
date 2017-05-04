@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Frame With Accessible Controls</title>
+
+	<link rel="stylesheet" href="./frame.css" />
+	<link rel="stylesheet" href="/controls/common/common.css" />
+
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+	        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	        crossorigin="anonymous"
+	></script>
+	<script src="/controls/common/announce.js"></script>
+	<script src="../loader.js"></script>
+</head>
+<body>
+
+	<div class="error hidden"
+	     role="alert"
+	></div>
+
+	<form aria-busy="true">
+		<h2>Mailing Address</h2>
+
+		<div data-src="clickToEdit">
+			{
+				"title": "First Name",
+				"contents": "John",
+				"name": "firstName"
+			}
+		</div>
+		<div data-src="clickToEdit">
+			{
+				"title": "Last Name",
+				"contents": "Smith",
+				"name": "lastName"
+			}
+		</div>
+		<div data-src="clickToEdit">
+			{
+				"title": "Address",
+				"name": "address1"
+			}
+		</div>
+		<div data-src="clickToEdit">
+			{
+				"title": "Unit",
+				"name": "address1"
+			}
+		</div>
+		<div data-src="clickToEdit">
+			{
+				"title": "City",
+				"name": "city"
+			}
+		</div>
+		<div data-src="selectList">
+			{
+				"title": "Province",
+				"name": "province",
+				"options": [
+					{
+						"text": "Core",
+						"options": [
+							{
+								"text": "Ontario",
+								"value": "ON",
+								"selected": true
+							}, {
+								"text": "Quebec",
+								"value": "QC"
+							}
+						]
+					}, {
+						"text": "Maritime",
+						"options": [
+							{
+								"text": "Newfoundland & Labrador",
+								"value": "NL"
+							}, {
+								"text": "Prince Edward Island",
+								"value": "PE"
+							}, {
+								"text": "Nova Scotia",
+								"value": "NS"
+							}, {
+								"text": "New Brunswick",
+								"value": "NB"
+							}
+						]
+					}, {
+						"text": "Prairies & Beyond",
+						"options": [
+							{
+								"text": "Alberta",
+								"value": "AB"
+							}, {
+								"text": "Manitoba",
+								"value": "MB"
+							}, {
+								"text": "Saskatchewan",
+								"value": "SK"
+							}
+						]
+					}, {
+						"text": "Territories",
+						"options": [
+							{
+								"text": "Northwest Territories",
+								"value": "NT"
+							}, {
+								"text": "Nunavut",
+								"value": "NU"
+							}, {
+								"text": "Yukon",
+								"value": "YT"
+							}
+						]
+					}, {
+						"text": "Other",
+						"options": [
+							{
+								"text": "British Columbia",
+								"value": "BC"
+							}
+						]
+					}
+				]
+			}
+		</div>
+		<div data-src="selectList">
+			{
+				"title": "Country",
+				"name": "country"
+			}
+		</div>
+		<div data-src="clickToEdit">
+			{
+				"title": "Postal Code",
+				"name": "postalCode"
+			}
+		</div>
+	</form>
+
+	<script type="text/javascript">
+		$(document).ready( function() {
+			if( typeof Promise === 'undefined' ) {
+				$.getScript('../polyfill.min.js')
+				 .done(function() {
+					 const loader = new Loader();
+					 loader.loadAll();
+				 });
+			} else {
+				const loader = new Loader();
+				loader.loadAll();
+			}
+		});
+	</script>
+</body>
+</html>
