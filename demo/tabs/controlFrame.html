@@ -145,18 +145,18 @@
 	</form>
 
 	<script type="text/javascript">
-		$(document).ready( function() {
+		$( document ).ready( function() {
 			if( typeof Promise === 'undefined' ) {
-				$.getScript('../polyfill.min.js')
-				 .done(function() {
+				$.getScript( '../polyfill.min.js' )
+				 .done( function() {
 					 const loader = new Loader();
-					 loader.loadAll();
-				 });
+					 loader.loadAll( $( 'form' ) );
+				 } );
 			} else {
 				const loader = new Loader();
-				loader.loadAll();
+				loader.loadAll( $( 'form' ) );
 			}
-		});
+		} );
 	</script>
 </body>
 </html>

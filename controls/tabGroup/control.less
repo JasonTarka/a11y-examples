@@ -10,12 +10,12 @@
 
 	& > [role='tab'] {
 		& {
-			border: thin solid @select-border-colour;
+			border: @border-width solid @select-border-colour;
 			border-left: none;
-			border-bottom: none;
+			border-bottom-color: @main-background-colour;
 			padding: @padding;
 			display: inline-block;
-			margin: 0 (@before-width / 2) 0 @before-width;
+			margin: 0 (@before-width / 2) -(@border-width) @before-width;
 			position: relative;
 			box-sizing: border-box;
 			border-top-right-radius: @padding;
@@ -46,8 +46,17 @@
 
 		&:focus {
 			& {
-				border-width: 2px 2px 0 0;
-				margin: -1px 3px -1px @before-width;
+				border-width:
+					@focus-width
+					@focus-width
+					@border-width
+					0;
+				border-bottom: @border-width solid @select-background-colour;
+				margin:
+					(@border-width - @focus-width)
+					(@border-width + @focus-width)
+					(@border-width - @focus-width)
+					@before-width;
 				outline: none;
 			}
 
@@ -68,7 +77,7 @@
 
 	& {
 		padding: @padding;
-		border: thin solid black;
+		border: thin solid @select-border-colour;
 		border-radius: 0 0 @padding @padding;
 		box-sizing: content-box;
 	}
@@ -87,6 +96,6 @@
 	& > iframe[role='tabpanel'] {
 		border: none;
 		width: 100%;
-		min-height: 100%;
+		min-height: 200px;
 	}
 }

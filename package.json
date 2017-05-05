@@ -12,7 +12,7 @@
     "start": "npm run build:less && node index.js",
     "start:old-browser": "npm run build && cd dist && node index.js",
     "watch": "parallelshell \"npm run start\" \"npm run watch:less\"",
-    "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -e \"./controls/**/*.css\" -- npm run build",
+    "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -e \"./**/*.css\" -- npm run build",
     "watch:js": "onchange \"demo/**/*.js\" \"controls/**/*.js\" -- npm run build:js",
     "watch:less": "onchange \"controls/**/*.less\" \"demo/**/*.less\" -- npm run build:less",
     "watch:old-browser": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\""

@@ -9,20 +9,22 @@ class Loader {
 		this._loaded = new Set();
 		this._loading = new Map();
 		this._loadedCss = new Set();
+		this._loadingHtml = new Map();
+		this._loadedHtml = new Map();
 
 		/** @type {Loader} */
 		Loader.Instance = this;
 	}
 
 	loadAll( node ) {
-		node = node || $( 'html' );
+		node = node || $( 'main[aria-busy]' );
 
 		let promises = $( '[data-src]', node ).toArray().map(
 			element => this.loadElement( $( element ) )
 		);
 
 		Promise.all( promises )
-			.then( () => $( 'main[aria-busy]' ).attr( 'aria-busy', 'false' ) );
+			.then( () => node.attr( 'aria-busy', 'false' ) );
 	}
 
 	loadElement( node ) {
@@ -32,7 +34,6 @@ class Loader {
 
 		return this.loadScript( name )
 			.then( () => this.loadCss( name ) )
-			.then( () => this._loaded.add( name ) )
 			.then( () => this.loadHtml( name, node ) )
 			.then( () => new window[className]( node, data ) )
 			.catch( err => Loader.logError( err, name ) );
@@ -73,6 +74,7 @@ class Loader {
 
 	loadCss( name ) {
 		if( !this._loadedCss.has( name ) ) {
+			this._loadedCss.add( name );
 			$( 'body' ).append( $(
 				`<link rel="stylesheet" href="/controls/${name}/control.css" />`
 			) );
@@ -80,18 +82,43 @@ class Loader {
 	}
 
 	loadHtml( name, node, location ) {
-		location = location || `/controls/${name}/control.html`;
+		let useCache = false;
+		if( !location ) {
+			location = `/controls/${name}/control.html`;
+			useCache = true;
+		}
 
-		return new Promise( ( resolve, reject ) =>
-			$.ajax( {
-				url: location,
-				success: data => {
-					$( node ).html( data );
-					resolve();
-				},
-				error: ( jqxhr, textStatus, error ) => reject( error )
-			} )
-		);
+		return new Promise( (resolve, reject) => {
+			if( useCache && this._loadedHtml.has( name ) ) {
+				$(node).html( this._loadedHtml.get( name ) );
+				resolve();
+			} else if (useCache && this._loadingHtml.has( name ) ) {
+				this._loadingHtml.get( name )
+					.then( () => {
+						$( node ).html( this._loadedHtml.get( name ) );
+						resolve();
+					} )
+					.catch( reject );
+			} else {
+				console.log( `${name}: Creating new promise`);
+				let promise = new Promise( ( subResolve, subReject ) =>
+						$.ajax( {
+							url: location,
+							success: data => {
+								this._loadedHtml.set( name, data );
+								$( node ).html( data );
+								subResolve();
+								this._loadingHtml.delete( name );
+							},
+							error: ( jqxhr, textStatus, error ) => subReject( error )
+						} )
+					).then( resolve )
+					.catch( reject );
+				this._loadingHtml.set( name, promise );
+			}
+		} );
+
+
 	}
 
 	static logError( err, name ) {
