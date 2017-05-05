@@ -1,5 +1,8 @@
 @import '../_common';
 
+@label-font-weight: 600;
+@label-width: 150px;
+
 /***** Accessibility or Functionality related *****/
 .clickToEdit {
 	.contents:hover,
@@ -13,7 +16,7 @@
 	}
 }
 
-	/***** Pure visual styling *****/
+/***** Pure visual styling *****/
 
 .clickToEdit {
 	@padding: 5px;
@@ -32,23 +35,38 @@
 
 	.title {
 		display: inline-block;
-		font-weight: 600;
-		width: 100px;
+		font-weight: @label-font-weight;
+		width: @label-width;
 	}
 
 	.contents {
-		display: inline-block;
-		padding: @padding;
-		border-radius: @padding;
+		& {
+			display: inline-block;
+			padding: @padding;
+			border-radius: @padding;
+		}
+
+		&.empty {
+			font-style: italic;
+			color: rgba(0, 0, 0, 0.7);
+		}
+
+		&.focused {
+			padding: @padding - @border-width;
+		}
 	}
 
-	.contents.focused {
-		padding: @padding - @border-width;
-	}
-
-	input {
+	input,
+	select {
 		border: @border-width solid @select-border-colour;
 		border-radius: @padding;
 		padding: @padding - @border-width;
+	}
+
+	// For some reason, when activating a select field, the label moves up a pixel, but I don't know why.
+	// All the numbers are the same, and it happens across browsers.
+	// This fixes the title, but the select moves a bit. However this is smaller, and less jarring, so I'm okay with it.
+	&.select .input .title {
+			margin-top: @padding;
 	}
 }

@@ -27,14 +27,14 @@
 		<div data-src="clickToEdit">
 			{
 				"title": "First Name",
-				"contents": "John",
+				"value": "John",
 				"name": "firstName"
 			}
 		</div>
 		<div data-src="clickToEdit">
 			{
 				"title": "Last Name",
-				"contents": "Smith",
+				"value": "Smith",
 				"name": "lastName"
 			}
 		</div>
@@ -56,10 +56,11 @@
 				"name": "city"
 			}
 		</div>
-		<div data-src="selectList">
+		<div data-src="clickToEdit">
 			{
 				"title": "Province",
 				"name": "province",
+				"type": "select",
 				"options": [
 					{
 						"text": "Core",
@@ -130,10 +131,23 @@
 				]
 			}
 		</div>
-		<div data-src="selectList">
+		<div data-src="clickToEdit">
 			{
 				"title": "Country",
-				"name": "country"
+				"name": "country",
+				"type": "select",
+				"options": [
+					{
+						"text": "Canada",
+						"value": "CA"
+					}, {
+						"text": "United States",
+						"value": "US"
+					}, {
+						"text": "Great Britain",
+						"value": "GB"
+					}
+				]
 			}
 		</div>
 		<div data-src="clickToEdit">
