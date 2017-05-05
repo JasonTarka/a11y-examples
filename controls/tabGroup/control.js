@@ -190,6 +190,11 @@ class TabGroup {
 		newTab.attr( 'aria-selected', true )
 			.attr( 'tabindex', 0 )
 			.focus();
+
+		// Make sure tabs are resized when we switch to them, as they would be 0-height when invisible
+		if( newPanel.is( 'iframe' ) ) {
+			TabGroup._frameResize( newPanel );
+		}
 	}
 
 	/***** Event Handlers *****/
