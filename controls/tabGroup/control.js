@@ -21,7 +21,7 @@ class TabGroup {
 
 	constructor( node, data ) {
 		/** @type {Array<TabData>} */
-		this.data = JSON.parse( data );
+		this.data = data;
 		this.loader = Loader.Instance;
 
 		this.elements = {

@@ -29,13 +29,13 @@ class Loader {
 
 	loadElement( node ) {
 		const name = node.attr( 'data-src' ),
-			className = name[0].toUpperCase() + name.substr( 1 ),
-			data = node.text().trim();
+			className = name[0].toUpperCase() + name.substr( 1 );
+		let data = node.text().trim();
 
 		return this.loadScript( name )
 			.then( () => this.loadCss( name ) )
 			.then( () => this.loadHtml( name, node ) )
-			.then( () => new window[className]( node, data ) )
+			.then( () => new window[className]( node, JSON.parse( data ) ) )
 			.catch( err => Loader.logError( err, name ) );
 	}
 
@@ -100,7 +100,6 @@ class Loader {
 					} )
 					.catch( reject );
 			} else {
-				console.log( `${name}: Creating new promise`);
 				let promise = new Promise( ( subResolve, subReject ) =>
 						$.ajax( {
 							url: location,

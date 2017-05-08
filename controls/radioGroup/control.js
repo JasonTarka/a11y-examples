@@ -2,7 +2,7 @@
 
 class RadioGroup {
 	constructor( node, data ) {
-		this.data = JSON.parse( data );
+		this.data = data;
 
 		this.elements = {
 			title: $( '.title', node ),

@@ -9,7 +9,7 @@ const KeyCodes = {
 class ClickToEdit {
 
 	constructor( node, data ) {
-		this.data = JSON.parse( data );
+		this.data = data;
 		this.title = this.data.title;
 		this.isSelect = this.data.type === 'select';
 		this.selectMap = this.isSelect ? new Map() : null;
