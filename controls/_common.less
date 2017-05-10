@@ -3,3 +3,35 @@
 @select-border-colour: #66F;
 @select-background-colour: #CCF;
 @main-background-colour: #F6F6F6;
+
+.arrow( @hyp, @colour, @rotation ) {
+	// Given the overall hypotenuse, figure out the thickness of the border
+	@half: @hyp / 2;
+	@border-width: sqrt(
+		    pow( @half, 2 ) / 2
+	    );
+
+	// Given the thickness of the border, figure out our single-direction translation for centering
+	@movement: @half / 2;
+	@translate: sqrt(
+			pow( @movement, 2 ) / 2
+		);
+
+	// Do something with these numbers
+	border-width: @border-width;
+	border-style: solid;
+	border-color: @colour @colour transparent transparent;
+	transform: translateX( -@translate ) translateY( -@translate ) rotate( @rotation ); // Center the arrow
+
+	display: inline-block;
+	height: 0;
+	width: 0;
+}
+
+.right-arrow( @hyp, @colour ) {
+	.arrow( @hyp, @colour, 45deg );
+}
+
+.down-arrow( @hyp, @colour ) {
+	.arrow( @hyp, @colour, 135deg );
+}
