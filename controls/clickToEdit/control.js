@@ -1,11 +1,5 @@
 'use strict';
 
-const KeyCodes = {
-	Enter: 13,
-	Esc: 27,
-	Tab: 9
-};
-
 class ClickToEdit {
 
 	constructor( node, data ) {

@@ -10,13 +10,6 @@
  * @property {bool} selected - Whether this Tab is the selected Tab or not
  */
 
-const TabKeyCodes = {
-	LeftArrow: 37,
-	RightArrow: 39,
-	Home: 36,
-	End: 35
-};
-
 class TabGroup {
 
 	constructor( node, data ) {
@@ -207,16 +200,16 @@ class TabGroup {
 	 */
 	_keyDown( event, prev, next ) {
 		switch( event.which ) {
-			case TabKeyCodes.Home:
+			case KeyCodes.Home:
 				this._activateTab( this.firstTab );
 				break;
-			case TabKeyCodes.End:
+			case KeyCodes.End:
 				this._activateTab( this.lastTab );
 				break;
-			case TabKeyCodes.LeftArrow:
+			case KeyCodes.LeftArrow:
 				this._activateTab( prev );
 				break;
-			case TabKeyCodes.RightArrow:
+			case KeyCodes.RightArrow:
 				this._activateTab( next );
 				break;
 			default:

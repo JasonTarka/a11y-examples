@@ -1,5 +1,18 @@
 'use strict';
 
+const KeyCodes = {
+	Tab: 9,
+	Enter: 13,
+	Esc: 27,
+	Space: 32,
+	End: 35,
+	Home: 36,
+	LeftArrow: 37,
+	UpArrow: 38,
+	RightArrow: 39,
+	DownArrow: 40,
+};
+
 // The amount of time to delay the announcement for, allowing any
 // focus changes to occur first
 const ANNOUNCE_DELAY = 250;
