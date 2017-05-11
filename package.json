@@ -7,15 +7,17 @@
     "build": "npm run build:less && npm run build:static && npm run build:js",
     "build:less": "foreach --no-c -g \"{demo,controls}/**/*.less\" -x \"lessc {{dir}}/{{name}}.less {{dir}}/{{name}}.css\"",
     "build:js": "babel index.js demo/**/*.js controls/**/*.js --out-dir dist",
-    "build:static": "copyfiles ./demo/**/* ./controls/**/* ./dist && npm run build:polyfill",
+    "build:static": "copyfiles ./demo/**/* ./controls/**/* ./dist && npm run build:polyfill && npm run build:html",
     "build:polyfill": "copyfiles -f ./node_modules/babel-polyfill/dist/polyfill.min.js dist/demo",
+    "build:html": "babel-html -s ./demo -d ./dist/demo --copy-files",
     "start": "npm run build:less && node index.js",
     "start:old-browser": "npm run build && cd dist && node index.js",
     "watch": "parallelshell \"npm run start\" \"npm run watch:less\"",
-    "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -e \"./**/*.css\" -- npm run build",
+    "watch:static": "onchange \"demo/**/*\" \"controls/**/*\" -e \"./**/*.js\" -e \"./**/*.css\" -e \"./demo/**/*.html\" -- npm run build",
+    "watch:html": "babel-html -s ./demo -d ./dist/demo --copy-files --watch",
     "watch:js": "onchange \"demo/**/*.js\" \"controls/**/*.js\" -- npm run build:js",
     "watch:less": "onchange \"controls/**/*.less\" \"demo/**/*.less\" -- npm run build:less",
-    "watch:old-browser": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\""
+    "watch:old-browser": "parallelshell \"npm run start:old-browser\" \"npm run watch:static\" \"npm run watch:js\" \"npm run watch:html\""
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
+    "babel-html": "^0.5.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-latest": "^6.24.1",
     "coffee-script": "^1.12.5",
