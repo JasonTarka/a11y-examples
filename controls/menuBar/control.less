@@ -8,6 +8,7 @@
 	@border-width: 1px;
 	@focus-width: 2px;
 	@border-difference: @focus-width - @border-width;
+	@checkbox-size: 12px;
 
 	& {
 		display: flex;
@@ -86,8 +87,6 @@
 
 		position: absolute;
 		z-index: 900;
-		top: 100%;
-		left: -@border-width;
 
 		border: @border-width solid @select-border-colour;
 		background-color: @main-background-colour;
@@ -96,16 +95,28 @@
 		border-bottom-right-radius: @padding;
 	}
 
+	[role='menu'] > .menuItems {
+		top: 100%;
+		left: -@border-width;
+	}
+
+	[role^='menuitem'] > .menuItems {
+		left: 100%;
+		top: 0;
+		border-radius: @padding;
+	}
+
 	[aria-expanded='true'] > .menuItems {
 		display: block;
 	}
 
-	[role='menuitem'] {
+	[role^='menuitem'] {
 		& {
 			display: block;
 			padding: @padding;
 			white-space: nowrap;
 			cursor: pointer;
+			position: relative;
 		}
 
 		&:hover {
@@ -135,6 +146,38 @@
 
 			border-bottom-right-radius: @padding - @border-difference;
 			border-bottom-left-radius: @padding - @border-difference;
+		}
+
+		// Show an arrow for options with sub-menus
+		&[aria-expanded]:after {
+			content: '';
+			.right-arrow( @arrow-size, @select-border-colour );
+			margin: @arrow-padding;
+		}
+
+		// Show something beforehand
+		&:before {
+			content: '';
+			display: inline-block;
+			width: @checkbox-size;
+			height: @checkbox-size;
+		}
+
+		&[aria-checked]:before {
+			border: thin solid @select-border-colour;
+		}
+
+		&[aria-checked='true']:before {
+			background-color: @select-background-colour;
+		}
+
+		&[aria-checked='false']:before {
+			// Make sure it appears empty when highlighted
+			background-color: @main-background-colour;
+		}
+
+		&[aria-checked][role='menuitemradio']:before {
+			border-radius: 100%;
 		}
 	}
 }

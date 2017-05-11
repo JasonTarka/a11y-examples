@@ -35,16 +35,16 @@
 						"hotkey": "w",
 						"onclick": "warpLevel",
 						"options": [
-							{ "title": "Warp 0", "hotkey": "0", "value": "0", "checked": true },
-							{ "title": "Warp 1", "hotkey": "1", "value": "1", "checked": false },
-							{ "title": "Warp 2", "hotkey": "2", "value": "2", "checked": false },
-							{ "title": "Warp 3", "hotkey": "3", "value": "3", "checked": false },
-							{ "title": "Warp 4", "hotkey": "4", "value": "4", "checked": false },
-							{ "title": "Warp 5", "hotkey": "5", "value": "5", "checked": false },
-							{ "title": "Warp 6", "hotkey": "6", "value": "6", "checked": false },
-							{ "title": "Warp 7", "hotkey": "7", "value": "7", "checked": false },
-							{ "title": "Warp 8", "hotkey": "8", "value": "8", "checked": false },
-							{ "title": "Warp 9", "hotkey": "9", "value": "9", "checked": false }
+							{ "title": "Warp 0", "hotkey": "0", "value": "0", "onclick": "warpLevel", "selected": true },
+							{ "title": "Warp 1", "hotkey": "1", "value": "1", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 2", "hotkey": "2", "value": "2", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 3", "hotkey": "3", "value": "3", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 4", "hotkey": "4", "value": "4", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 5", "hotkey": "5", "value": "5", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 6", "hotkey": "6", "value": "6", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 7", "hotkey": "7", "value": "7", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 8", "hotkey": "8", "value": "8", "onclick": "warpLevel", "selected": false },
+							{ "title": "Warp 9", "hotkey": "9", "value": "9", "onclick": "warpLevel", "selected": false }
 						]
 					}
 				]
@@ -53,7 +53,7 @@
 	}
 </div>
 
-<div id="menuChunks">
+<div id="menuChunks" tabindex="-1">
 	<p id="thisExample">
 		This is an example menubar intended to demonstrate what a menubar, and its sub-menus, should do.
 		It should be both accessible to screen-readers, keyboard-only users, as well as mouse-users.
@@ -73,11 +73,11 @@
 	</div>
 </div>
 
-<div id="menuStates">
-	<div>
+<div id="menuStates" tabindex="-1">
+	<div id="splines-container" tabindex="-1">
 		Reticulated Splines: <span id="splines-state">off</span>
 	</div>
-	<div class="warpContainer">
+	<div class="warpContainer" tabindex="-1">
 		<div class="text">
 			Warp Level: <span id="warp-level">0</span>
 		</div>
@@ -87,26 +87,29 @@
 
 <script type="text/javascript">
 	function showText( id ) {
-		console.log( `showText( ${id} )`);
-		$( '#menuChunks' )
+		let menuChunks = $( '#menuChunks' );
+		menuChunks
 			.children( ':not(.hidden)' )
 			.addClass( 'hidden' );
 
 		$( `#${id}` ).removeClass( 'hidden' );
+
+		menuChunks.focus();
 	}
 
 	function setSelected( name, checked ) {
-		console.log( `setSelected( ${name}, ${checked} )`);
 		switch( name ) {
 			case 'splines':
 				$( '#splines-state' )
 					.text( checked ? 'on' : 'off ' );
+				$( '#splines-container' ).focus();
 				break;
 		}
 	}
 
-	function warpLevel( value, checked ) {
+	function warpLevel( value ) {
 		value = parseInt( value );
+		$( '#warp-level' ).text( value );
 
 		let percent = parseInt( (value / 9) * 100 ),
 			start = 'rgb( 0%, 100%, 0% )',
@@ -119,6 +122,8 @@
 			'style',
 			`background: linear-gradient( to right, ${start}, ${middle} ${middlePos}%, ${end} ${endPos}% )`
 		);
+
+		$( '.warpContainer' ).focus();
 	}
 </script>
 <style>

@@ -18,7 +18,9 @@
  * @property {string} title - The user-visible name of this menu option
  * @property {string} value - Value to be used for callbacks
  * @property {string} hotkey - Key that can be hit to activate this menu option
- * @property {boolean|undefined} checked - Whether this option is selected by default.
+ * @property {boolean|undefined} checked - This option is a checkbox, and whether it is selected by default.
+ *      Note: If this is not set, then the option will be considered an action, rather than a state selection
+ * @property {boolean|undefined} selected - This option is a radio button, and whether it is selected by default.
  *      Note: If this is not set, then the option will be considered an action, rather than a state selection
  * @property {Array<MenuBarOption>|undefined} options - List of options in a sub-menu
  * @property {MenuBarAction} onclick - JavaScript to perform when the option is activated
@@ -32,6 +34,23 @@
  */
 
 class MenuBar {
+
+	static get Selectors() {
+		return {
+			Menu: '[role="menu"]',
+			MenuItem: '[role^="menuitem"]',
+			Expandable: '[aria-haspopup="true"]',
+			Expanded: '[aria-expanded="true"]'
+		};
+	}
+
+	static get Attributes() {
+		return {
+			Expanded: 'aria-expanded',
+			Checked: 'aria-checked'
+		};
+	}
+
 	constructor( node, data ) {
 		this.data = data;
 		this.title = data.title;
@@ -80,8 +99,9 @@ class MenuBar {
 					</span>
 					<div class="menuItems"></div>
 				</div>`
-			).on( 'click', event => MenuBar._toggleMenu( menu, event ) )
-			.on( 'keydown', event => MenuBar._keyDownMenu( menu, event ) );
+			).on( 'click', event => this._toggleMenu( menu, event ) )
+			.on( 'keydown', event => this._keyDownMenu( menu, event ) )
+			.on( 'blur', event => this._blur( menu ) );
 
 		menu.children( '.menuItems' )
 			.append( options );
@@ -98,22 +118,32 @@ class MenuBar {
 			options = (data.options || []).map( x => this._constructMenuOption( x ) ),
 			expanded = options.length ? 'aria-expanded="false"' : '',
 			hotkey = data.hotkey,
-			checked = data.checked == null ? '' : `aria-checked="${data.checked}"`;
+			checked = data.checked == null ? '' : `aria-checked="${data.checked}"`,
+			selected = data.selected == null ? '' : `aria-checked="${data.selected}"`;
+
+		const role =
+			checked
+				? 'menuitemcheckbox'
+				: selected
+					? 'menuitemradio'
+					: 'menuitem';
 
 		let menuOption = $( `
-				<div role="menuitem"
+				<div role="${role}"
 					 tabindex="-1"
 					 data-hotkey="${hotkey}"
 					 aria-haspopup="${!!options.length}"
 					 ${expanded}
-					 ${checked}
+					 ${checked || selected}
 				>
 					<span class="title">
 						${title}				
 					</span>
 				</div>`
-			).on( 'click', event => MenuBar._activateMenuOption( event, menuOption, data ) )
-			.on( 'keydown', event => MenuBar._keyDownMenuOption( event, menuOption, data ) );
+			).on( 'click', event => this._activateMenuOption( event, menuOption, data ) )
+			.on( 'keydown', event => this._keyDownMenuOption( event, menuOption, data ) )
+			.on( 'focus', event => MenuBar._focus( menuOption ) )
+			.on( 'blur', event => this._blur( menuOption ) );
 
 		if( options.length ) {
 			menuOption.append(
@@ -152,20 +182,20 @@ class MenuBar {
 	 * @param node {jQuery}
 	 * @private
 	 */
-	static _keyDownMenu( node, event ) {
-		const sibling = '[role="menu"]';
+	_keyDownMenu( node, event ) {
+		const sibling = MenuBar.Selectors.Menu;
 
 		switch( event.which ) {
 			case KeyCodes.Enter:
 			case KeyCodes.Space:
-				return MenuBar._toggleMenu( node, event );
+				return this._toggleMenu( node, event );
 
 			case KeyCodes.DownArrow:
 				// Open the menu if it's not already
-				if( node.attr( 'aria-expanded' ) !== 'true' ) {
-					MenuBar._toggleMenu( node, event );
+				if( node.attr( MenuBar.Attributes.Expanded ) !== 'true' ) {
+					this._toggleMenu( node, event );
 				} else {
-					node.find( '[role="menuitem"]' )
+					node.find( MenuBar.Selectors.MenuItem )
 						.first()
 						.focus();
 				}
@@ -178,7 +208,6 @@ class MenuBar {
 			case KeyCodes.LeftArrow:
 				MenuBar._findSibling( node, sibling, false ).focus();
 				break;
-
 
 			default:
 				return;
@@ -194,39 +223,51 @@ class MenuBar {
 	 * @param data {MenuBarOption}
 	 * @private
 	 */
-	static _keyDownMenuOption( event, node, data ) {
-		const sibling = '[role="menuitem"]',
-			menuSelector = '[role="menu"]';
+	_keyDownMenuOption( event, node, data ) {
+		const menuItemSelector = MenuBar.Selectors.MenuItem,
+			menuSelector = MenuBar.Selectors.Menu;
 
 		switch( event.which ) {
 			case KeyCodes.Enter:
 			case KeyCodes.Space:
-				return MenuBar._activateMenuOption( event, node, data );
+				return this._activateMenuOption( event, node, data );
 
 			case KeyCodes.DownArrow:
-				MenuBar._findSibling( node, sibling, true ).focus();
+				MenuBar._findSibling( node, menuItemSelector, true ).focus();
 				break;
 
 			case KeyCodes.UpArrow:
-				MenuBar._findSibling( node, sibling, false ).focus();
+				MenuBar._findSibling( node, menuItemSelector, false ).focus();
 				break;
 
 			case KeyCodes.RightArrow:
-				let nextMenu = MenuBar._findSibling(
-					node.closest( menuSelector ),
-					menuSelector,
-					true
-				);
-				MenuBar._toggleMenu( nextMenu, event );
+				if( node.attr( MenuBar.Attributes.Expanded ) != null ) {
+					this._toggleMenu( node, event );
+				} else {
+					let nextMenu = MenuBar._findSibling(
+						node.closest( menuSelector ),
+						menuSelector,
+						true
+					);
+					this._toggleMenu( nextMenu, event );
+				}
 				break;
 
 			case KeyCodes.LeftArrow:
-				let prevMenu = MenuBar._findSibling(
-					node.closest( menuSelector ),
-					menuSelector,
-					false
-				);
-				MenuBar._toggleMenu( prevMenu, event );
+				let parentOption = node.parentsUntil( menuSelector, menuItemSelector );
+				if( parentOption.length ) {
+					// This is a sub-menu
+					this._toggleMenu( parentOption.first() )
+						.focus();
+				} else {
+					// This is a top-level menu, go to the next menu
+					let prevMenu = MenuBar._findSibling(
+						node.closest( menuSelector ),
+						menuSelector,
+						false
+					);
+					this._toggleMenu( prevMenu, event );
+				}
 				break;
 
 			default:
@@ -237,27 +278,71 @@ class MenuBar {
 		event.stopPropagation();
 	}
 
+	static _focus( node ) {
+		node.siblings( MenuBar.Selectors.Expanded )
+			.attr( MenuBar.Attributes.Expanded, false );
+	}
+
+	_blur( node, fromTimeout ) {
+		const focused = $( ':focus' ),
+			parent = node.parent();
+
+		// New node isn't focused yet, try again in a moment
+		if( !focused.length && !fromTimeout ) {
+			if( fromTimeout ) {
+				return;
+			} else {
+				return setTimeout(
+					() => this._blur( node, true ),
+					10
+				);
+			}
+		}
+
+		// Currently focused element is a child, ignore it
+		if( $.contains( node[0], focused[0] ) ) {
+			return;
+		}
+
+		// Focused is a sibling, ignore it
+		if( $.contains( parent[0], focused[0] ) ) {
+			return;
+		}
+
+		// focused is outside of the menu, close everything
+		if( !$.contains( this.elements.bar[0], focused[0] ) ) {
+			this.elements.bar.children( MenuBar.Selectors.Expanded ).each(
+				(index, element) => this._toggleMenu( $( element ) )
+			);
+		}
+	}
+
 	/**
 	 * @param event {MouseEvent|KeyboardEvent}
 	 * @param node {jQuery}
 	 * @private
 	 */
-	static _toggleMenu( node, event ) {
+	_toggleMenu( node, event ) {
 		if( event ) {
 			event.preventDefault();
 			event.stopPropagation();
 		}
 
-		let openMenu = node.attr( 'aria-expanded' ) !== 'true';
-		node.attr( 'aria-expanded', openMenu )
-			.siblings( `[aria-expanded]` )
-			.attr( 'aria-expanded', false );
+		let openMenu = node.attr( MenuBar.Attributes.Expanded ) !== 'true';
+		node.attr( MenuBar.Attributes.Expanded, openMenu )
+			.siblings( MenuBar.Selectors.Expandable )
+			.attr( MenuBar.Attributes.Expanded, false );
 
 		if( openMenu ) {
-			node.find( '.menuItems [role="menuitem"]' )
+			node.find( `.menuItems ${MenuBar.Selectors.MenuItem}` )
 				.first()
 				.focus();
+		} else {
+			node.find( MenuBar.Selectors.Expanded )
+				.attr( MenuBar.Attributes.Expanded, false );
 		}
+
+		return node;
 	}
 
 	/**
@@ -266,26 +351,36 @@ class MenuBar {
 	 * @param data {MenuBarOption}
 	 * @private
 	 */
-	static _activateMenuOption( event, node, data ) {
+	_activateMenuOption( event, node, data ) {
 		event.preventDefault();
 		event.stopPropagation();
 
 		const onClick = MenuBar._getFunction( data.onclick ),
 			isCheckbox = data.checked != null,
-			isChecked = node.attr( 'aria-checked' ) === 'true',
+			isRadio = data.selected != null,
+			isChecked = node.attr( MenuBar.Attributes.Checked ) !== 'true', // Not equals so it becomes unchecked
 			hasSubMenu = data.options;
 
 		if( hasSubMenu ) {
-
-		} else {
-			isCheckbox
-				? onClick( data.value, isChecked )
-				: onClick( data.value );
-			node.parentsUntil( '.menuBar', '[aria-expanded]' )
-				.each(
-					( index, element ) => MenuBar._toggleMenu( $( element ) )
-				);
+			return this._toggleMenu( node );
 		}
+
+		if( isCheckbox ) {
+			node.attr( MenuBar.Attributes.Checked, isChecked );
+			onClick( data.value, isChecked );
+		} else if( isRadio ) {
+			node.attr( MenuBar.Attributes.Checked, true )
+				.siblings( MenuBar.Selectors.MenuItem )
+				.attr( MenuBar.Attributes.Checked, false );
+			onClick( data.value );
+		} else {
+			onClick( data.value );
+		}
+
+		node.parentsUntil( this.elements.bar, MenuBar.Selectors.Expandable )
+			.each(
+				( index, element ) => this._toggleMenu( $( element ) )
+			);
 	}
 
 	static _findSibling( node, selector, getNext ) {
