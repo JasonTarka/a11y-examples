@@ -22,7 +22,7 @@
 		border-top-right-radius: @padding;
 	}
 
-	[role='menu'] {
+	.menu {
 		& {
 			position: relative;
 
@@ -82,7 +82,7 @@
 		}
 	}
 
-	.menuItems {
+	[role='menu'] {
 		display: none;
 
 		position: absolute;
@@ -95,22 +95,22 @@
 		border-bottom-right-radius: @padding;
 	}
 
-	[role='menu'] > .menuItems {
+	.menu > [role='menu'] {
 		top: 100%;
 		left: -@border-width;
 	}
 
-	[role^='menuitem'] > .menuItems {
+	.menuItem > [role='menu'] {
 		left: 100%;
 		top: 0;
 		border-radius: @padding;
 	}
 
-	[aria-expanded='true'] > .menuItems {
+	[aria-expanded='true'] > [role='menu'] {
 		display: block;
 	}
 
-	[role^='menuitem'] {
+	[role='menu'] > [role^='menuitem'] {
 		& {
 			display: block;
 			padding: @padding;

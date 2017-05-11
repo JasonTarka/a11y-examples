@@ -37,17 +37,19 @@ class MenuBar {
 
 	static get Selectors() {
 		return {
-			Menu: '[role="menu"]',
-			MenuItem: '[role^="menuitem"]',
+			Menu: '.menu',
+			MenuItem: '.menuItem',
 			Expandable: '[aria-haspopup="true"]',
-			Expanded: '[aria-expanded="true"]'
+			Expanded: '[aria-expanded="true"]',
+			SubMenu: '[role="menu"]'
 		};
 	}
 
 	static get Attributes() {
 		return {
 			Expanded: 'aria-expanded',
-			Checked: 'aria-checked'
+			Checked: 'aria-checked',
+			HasPopup: 'aria-haspopup'
 		};
 	}
 
@@ -88,7 +90,8 @@ class MenuBar {
 			tabIndex = isFirst ? 0 : -1;
 
 		let menu = $( `
-				<div role="menu"
+				<div role="menuitem"
+					 class="menu"
 					 tabindex="${tabIndex}"
 					 data-hotkey="${hotkey}"
 					 aria-haspopup="true"
@@ -97,13 +100,13 @@ class MenuBar {
 					<span class="title">
 						${title}				
 					</span>
-					<div class="menuItems"></div>
+					<div role="menu"></div>
 				</div>`
 			).on( 'click', event => this._toggleMenu( menu, event ) )
 			.on( 'keydown', event => this._keyDownMenu( menu, event ) )
 			.on( 'blur', event => this._blur( menu ) );
 
-		menu.children( '.menuItems' )
+		menu.children( MenuBar.Selectors.SubMenu )
 			.append( options );
 
 		return menu;
@@ -130,6 +133,7 @@ class MenuBar {
 
 		let menuOption = $( `
 				<div role="${role}"
+					 class="menuItem"
 					 tabindex="-1"
 					 data-hotkey="${hotkey}"
 					 aria-haspopup="${!!options.length}"
@@ -147,7 +151,7 @@ class MenuBar {
 
 		if( options.length ) {
 			menuOption.append(
-				$( `<div class="menuItems"></div>` )
+				$( `<div role="menu"></div>` )
 					.append( options )
 			);
 		}
@@ -241,7 +245,7 @@ class MenuBar {
 				break;
 
 			case KeyCodes.RightArrow:
-				if( node.attr( MenuBar.Attributes.Expanded ) != null ) {
+				if( node.attr( MenuBar.Attributes.HasPopup ) === 'true' ) {
 					this._toggleMenu( node, event );
 				} else {
 					let nextMenu = MenuBar._findSibling(
@@ -334,7 +338,7 @@ class MenuBar {
 			.attr( MenuBar.Attributes.Expanded, false );
 
 		if( openMenu ) {
-			node.find( `.menuItems ${MenuBar.Selectors.MenuItem}` )
+			node.find( `${MenuBar.Selectors.SubMenu} > ${MenuBar.Selectors.MenuItem}` )
 				.first()
 				.focus();
 		} else {
