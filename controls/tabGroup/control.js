@@ -161,7 +161,6 @@ class TabGroup {
 
 		return this.loader.loadHtml( null, node, location )
 			.then( () => this.loader.loadAll( node ) )
-			.then( () => node.removeAttr( 'aria-busy' ) )
 			.catch( err => Loader.logError( err, location ) );
 	}
 
